@@ -13,23 +13,23 @@ ADogPlayer::ADogPlayer()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//StaticMeshComponentを追加、RootComponentに設定
-	Sphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaiticMeshComponent"));
-	RootComponent = Sphere;
+	Cube = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaiticMeshComponent"));
+	RootComponent = Cube;
 
 	// StaticMeshをLaodしてStaticMeshComponentのStaticMeshに設定する
-	UStaticMesh* Mesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere"));
+	UStaticMesh* Mesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube"));
 
 	// StaticMeshをStaticMeshComponentに設定する
-	Sphere->SetStaticMesh(Mesh);
+	Cube->SetStaticMesh(Mesh);
 
 	// MaterialをStaticMeshに設定する
-	UMaterial* Material = LoadObject<UMaterial>(nullptr, TEXT("/Engine/BasicShapes/M_Metal_Gold"));
+	UMaterial* Material = LoadObject<UMaterial>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial"));
 
 	// MaterialをStaticMeshComponentに設定する
-	Sphere->SetMaterial(0, Material);
+	Cube->SetMaterial(0, Material);
 
 	// Simulate Physicsを有効にする(物理シミュレーション）
-	Sphere->SetSimulatePhysics(true);
+	Cube->SetSimulatePhysics(true);
 
 	// SpringArmを追加する
 	SpringArm = CreateDefaultSubobject < USpringArmComponent>(TEXT("SpringArmComponent"));

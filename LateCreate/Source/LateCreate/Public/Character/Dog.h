@@ -4,12 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "InputActionValue.h"
 #include "Dog.generated.h"
+
 
 //クラスの宣言
 class UStaticMeshCOmponent;
 class USpringArmComponent;
 class UCameraComponent;
+class UInputMappingContext;
+class UInputAction;
+
 
 UCLASS()
 class LATECREATE_API ADog : public APawn
@@ -49,5 +54,44 @@ private:
 
 	//スプリングアームの長さ調整変数
 	float ArmLength = 450.0f;
+
+protected:
+	//視点操作
+	void Look(const FInputActionValue& Value);
+	//攻撃
+	void Attack(const FInputActionValue& Value);
+	//標準
+	void Standerd(const FInputActionValue& Value);
+
+private:
+	/** BallをControlする */
+	void ControlBall(const FInputActionValue& Value);
+
+	//LookInputAction
+	UPROPERTY(EditAnywhere,Category = Input,meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> LookAction;
+
+	//AttackInputAction
+	UPROPERTY(EditAnywhere, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction>AttackAction;
+
+	//StanderdInputAction
+	UPROPERTY(EditAnywhere, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction>StanderdAction;
+
+public:
+	/** MappingContext */
+	UPROPERTY(EditAnywhere, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputMappingContext> DefaultMappingContext;
+
+private:
+	//弾丸のクラス
+	UPROPERTY(EditDefaultsOnly,Category = "Projectile")
+	TSubclassOf<class ABallActor> BallActorClass;
+
+	//発射ポイント
+	UPROPERTY(VisibleAnywhere,Category = "Componets")
+	USceneComponent* MuzzlePoint;
+
 
 };

@@ -35,7 +35,7 @@ private:
 
 	//主人のメッシュ カプセル
 	UPROPERTY(VisibleAnywhere, Category = Character, meta = (AllowPrivaetAccess = "true"))
-	TObjectPtr<UStaticMeshComponent> Sphere;
+	TObjectPtr<UStaticMeshComponent> Cube;
 
 	//カメラ配置のスプリングアーム
 	UPROPERTY(VisibleAnywhere, Category = Camera, meta = (AllowPrivateAccess = "true"))
