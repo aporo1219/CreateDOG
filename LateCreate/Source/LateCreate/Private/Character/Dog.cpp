@@ -57,7 +57,7 @@ ADog::ADog()
 	Camera->SetupAttachment(SpringArm);
 
     //InputMapping‚Ì“Ç‚İ‚İ
-	DefaultMappingContext = LoadObject<UInputMappingContext>(nullptr, TEXT("/Game/input/InputMappingContext"));
+	DefaultMappingContext = LoadObject<UInputMappingContext>(nullptr, TEXT("/Game/input/InputMappingContext1"));
 
 	LookAction = LoadObject<UInputAction>(nullptr, TEXT("/Game/input/IA_Look"));
 
@@ -81,6 +81,7 @@ void ADog::BeginPlay()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+			UE_LOG(LogTemp, Warning, TEXT("MappingContext added!"));
 		}
 	}
 }
@@ -103,7 +104,7 @@ void ADog::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		// ControlBall‚ÆIA_Look‚ÌTriggered‚ğBind‚·‚é
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ADog::Look);
 		// ControlBall‚ÆIA_Attack‚ÌTriggered‚ğBind‚·‚é
-		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ADog::Attack);
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ADog::Attack);
 		// ControlBall‚ÆIA_Standerd‚ÌTriggered‚ğBind‚·‚é
 		EnhancedInputComponent->BindAction(StanderdAction, ETriggerEvent::Triggered, this, &ADog::Standerd);
 	}
@@ -132,9 +133,12 @@ void ADog::Attack(const FInputActionValue& Value)
 {
 	if (!BallActorClass)
 	{
+		//UE_LOG(LogTemp, Warning, TEXT("Attack called!"));
 		return;
     }  
 
+
+	UE_LOG(LogTemp, Warning, TEXT("Attack called!"));
 	FVector MuzzleLocation = MuzzlePoint->GetComponentLocation();
 	FRotator MuzzleRotation = Camera->GetComponentRotation(); // ƒJƒƒ‰‚ÌŒü‚«‚É”­Ë
 

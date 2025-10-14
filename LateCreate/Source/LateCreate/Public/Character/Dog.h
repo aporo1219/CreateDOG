@@ -86,7 +86,7 @@ public:
 
 private:
 	//弾丸のクラス
-	UPROPERTY(EditDefaultsOnly,Category = "Projectile")
+	UPROPERTY(EditDefaultsOnly,Category = "Attack")
 	TSubclassOf<class ABallActor> BallActorClass;
 
 	//発射ポイント

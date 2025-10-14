@@ -15,18 +15,21 @@ public:
 	// Sets default values for this actor's properties
 	ABallActor();
 
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UStaticMeshComponent* Mesh;
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* Mesh;
-
-	UPROPERTY(VisibleAnywhere,Category = "Components")
-	class UProjectileMovementComponent*  Movement;
+;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class UProjectileMovementComponent* Movement;
 public:	
 	//‹Ê‚Ì“®‚«
 	void InitVelocity(const FVector& ShootDir);
+
+
 
 private:
 	float I_Speed = 2000.0f;
