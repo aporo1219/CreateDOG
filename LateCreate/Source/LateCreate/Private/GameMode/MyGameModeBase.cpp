@@ -12,5 +12,9 @@ AMyGameModeBase::AMyGameModeBase()
 	//PlayerControllerClass = AMainPlayerController::StaticClass();
 
     //ç≈èâÇÃPawnÇÃê›íË
-	DefaultPawnClass = ADog::StaticClass();
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/BP/BPDog"));
+	if (PlayerPawnBPClass.Class != nullptr)
+	{
+		DefaultPawnClass = PlayerPawnBPClass.Class;
+	}
 }

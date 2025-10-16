@@ -32,7 +32,7 @@ public:
 
 
 private:
-	float I_Speed = 2000.0f;
-	float Max_Speed = 2000.0f;
+	float I_Speed = 3000.0f;
+	float Max_Speed = 3000.0f;
 
 };

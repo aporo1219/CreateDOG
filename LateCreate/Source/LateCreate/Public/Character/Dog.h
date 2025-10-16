@@ -62,6 +62,10 @@ protected:
 	void Attack(const FInputActionValue& Value);
 	//標準
 	void Standerd(const FInputActionValue& Value);
+	//ジャンプ
+	void Jump(const FInputActionValue& Value);
+	//切り替え
+	void Switch(const FInputActionValue& Value);
 
 private:
 	/** BallをControlする */
@@ -79,6 +83,14 @@ private:
 	UPROPERTY(EditAnywhere, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction>StanderdAction;
 
+	//JumpInputAction
+	UPROPERTY(EditAnywhere,Category = Input,meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> JumpAction;
+
+	//SwitchInputAction
+	UPROPERTY(EditAnywhere, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> SwitchAction;
+
 public:
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -93,5 +105,20 @@ private:
 	UPROPERTY(VisibleAnywhere,Category = "Componets")
 	USceneComponent* MuzzlePoint;
 
+//変数宣言
+private:
+	//スポーン位置調整
+	float Spawnlocation = 200.0f;
+	//ジャンプ力
+	float JumpForce = 500.0f;
 
+     //ジャンプができるか判定
+	bool CanJump = false;
+
+	//攻撃、移動切り替え
+	bool IsChangeAttack = false;//falseならば移動モード
+
+protected:
+	//HitEventをBindingする関数
+	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 };
