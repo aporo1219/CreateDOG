@@ -10,6 +10,9 @@
 #include "EnhancedInputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Actor/BallActor.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"//NavMesh移動に必要なインクルード
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ADog::ADog()
@@ -17,52 +20,58 @@ ADog::ADog()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
-	//StaticMeshComponentを追加、RootComponentに設定
-	Sphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaiticMeshComponent"));
-	RootComponent = Sphere;
+	// ACharacterにはデフォルトでCapsuleComponentがRoot
+	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.f);
 
-	// StaticMeshをLaodしてStaticMeshComponentのStaticMeshに設定する
-	UStaticMesh* Mesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere"));
+	// 仮の見た目（エンジン内のSphereを使う）
+	USkeletalMeshComponent* CharacterMesh = GetMesh();
 
-	// StaticMeshをStaticMeshComponentに設定する
-	Sphere->SetStaticMesh(Mesh);
+	// SkeletalMeshがまだないので、StaticMeshを仮でアタッチ
 
+	UStaticMesh* TestMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+	UStaticMeshComponent* DummyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DummyMesh"));
+	DummyMesh->SetStaticMesh(TestMesh);
+
+	// Root（Capsule）にアタッチ
+	DummyMesh->SetupAttachment(RootComponent);
+
+	// 位置を少し下げる（地面に埋まらないように）
+	DummyMesh->SetRelativeLocation(FVector(50.0f,50.0f, -50.0f));
+
+	// コリジョンを無効にする（Capsuleが当たり判定担当）
+	DummyMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	// MaterialをStaticMeshに設定する
 	UMaterial* Material = LoadObject<UMaterial>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial"));
 
-	// MaterialをStaticMeshComponentに設定する
-	Sphere->SetMaterial(0, Material);
-
-	// Simulate Physicsを有効にする(物理シミュレーション）
-	Sphere->SetSimulatePhysics(true);
-
-	//Collision設定
-	//CollisionPresetを[PhysicsActor]に変更
-	Sphere->SetCollisionProfileName(TEXT("PhysicsActor"));
-	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	Sphere->SetNotifyRigidBodyCollision(true);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Pawn"));
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Block);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore); // マウスクリック判定用
 
 	//HitEvenntを有効にする
-	Sphere->BodyInstance.bNotifyRigidBodyCollision = true;
+	GetCapsuleComponent()->BodyInstance.bNotifyRigidBodyCollision = true;
 
-	// SpringArmを追加する
-	SpringArm = CreateDefaultSubobject < USpringArmComponent>(TEXT("SpringArmComponent"));
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
 
+	// 距離（カメラが犬の後ろにどれくらい離れるか）
+	SpringArm->TargetArmLength = 600.0f;  // 
 
+	// カメラの角度を少し下に向ける
+	SpringArm->SetRelativeRotation(FRotator(-20.0f, 0.0f, 0.0f));
+	// プレイヤーのマウス操作でカメラが回らないようにする
+	SpringArm->bUsePawnControlRotation = false;
 
-	// Spring Armの長さを調整する
-	SpringArm->TargetArmLength = ArmLength;
-
-	// PawnのControllerRotationを使用する
-	SpringArm->bUsePawnControlRotation = true;
-
-	// CameraのLagを有効にする
+	// カメラのラグでスムーズに追従
 	SpringArm->bEnableCameraLag = true;
+	SpringArm->CameraLagSpeed = 5.0f;
 
-	//Cameraの追加
-	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
-	Camera->SetupAttachment(SpringArm);
+	// カメラのセットアップ
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
+
+	// カメラはPawnの回転を使わない（固定後方視点）
+	Camera->bUsePawnControlRotation = false;
 
     //InputMappingの読み込み
 	DefaultMappingContext = LoadObject<UInputMappingContext>(nullptr, TEXT("/Game/input/InputMappingContext1"));
@@ -80,6 +89,18 @@ ADog::ADog()
 
 	//Jumpアクション読み込み
 	JumpAction = LoadObject<UInputAction>(nullptr, TEXT("/Game/input/IA_Jump"));
+
+    //Clickアクション読み込み
+	ClickAction = LoadObject<UInputAction>(nullptr, TEXT("/Game/input/IA_Click"));
+
+	//Switchアクション読み込み
+	SwitchAction = LoadObject<UInputAction>(nullptr, TEXT("/Game/input/IA_Switch"));
+
+	//Standerdアクション読み込み
+	StanderdAction = LoadObject<UInputAction>(nullptr, TEXT("/Game/input/IA_Standerd"));
+
+	// CharacterMovementComponent にジャンプ力を設定
+	GetCharacterMovement()->JumpZVelocity = JumpForce;
 }
 
 // Called when the game starts or when spawned
@@ -95,6 +116,13 @@ void ADog::BeginPlay()
 			UE_LOG(LogTemp, Warning, TEXT("MappingContext added!"));
 		}
 	}
+
+	//マウスカーソルの有効化
+	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
+	{
+		PC->bShowMouseCursor = true;
+		PC->SetInputMode(FInputModeGameAndUI());
+	}
 }
 
 // Called every frame
@@ -102,17 +130,6 @@ void ADog::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-}
-
-void ADog::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
-{
-	UE_LOG(LogTemp, Warning, TEXT("CanJump"));
-	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
-	if (Other)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Hit actor: %s"), *Other->GetName());
-	}
-	CanJump = true;
 }
 
 // Called to bind functionality to input
@@ -128,9 +145,13 @@ void ADog::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		// ControlBallとIA_AttackのTriggeredをBindする
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ADog::Attack);
 		// ControlBallとIA_StanderdのTriggeredをBindする
-		EnhancedInputComponent->BindAction(StanderdAction, ETriggerEvent::Triggered, this, &ADog::Standerd);
+		EnhancedInputComponent->BindAction(StanderdAction, ETriggerEvent::Triggered, this, &ADog::LockOn);
 		// ControlBallとIA_JumpのTriggeredをBindする
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ADog::Jump);
+		//Contro;BallとIA_ClickのTriggeredをBindする
+		EnhancedInputComponent->BindAction(ClickAction, ETriggerEvent::Triggered, this, &ADog::MoveToMousePoint);
+		//Contro;BallとIA_SwitchのTriggeredをBindする
+		EnhancedInputComponent->BindAction(SwitchAction, ETriggerEvent::Triggered, this, &ADog::Switch);
 	}
 }
 
@@ -157,32 +178,37 @@ void ADog::Look(const FInputActionValue& Value)
 //攻撃操作の処理関数
 void ADog::Attack(const FInputActionValue& Value)
 {
-	//スポーン値
-	FActorSpawnParameters Params;
-	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-    
-	//位置の設定
-	FVector SpawnLoc = GetActorLocation() + GetActorForwardVector() * Spawnlocation;
-	FRotator SpawnRot = GetActorRotation();
+	if (IsChangeAttack)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("changeattack"));
+		//スポーン値
+		FActorSpawnParameters Params;
+		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	ABallActor* Ball = GetWorld()->SpawnActor<ABallActor>(BallActorClass, SpawnLoc, SpawnRot, Params);
+		//位置の設定
+		FVector SpawnLoc = GetActorLocation() + GetActorForwardVector() * Spawnlocation;
+		FRotator SpawnRot = GetActorRotation();
 
-	  if (Ball)
-    {
-        // 発射方向を渡す
-        Ball->InitVelocity(GetActorForwardVector());
+		ABallActor* Ball = GetWorld()->SpawnActor<ABallActor>(BallActorClass, SpawnLoc, SpawnRot, Params);
 
-        UE_LOG(LogTemp, Warning, TEXT("Ball spawned and InitVelocity called!"));
-    }
-    else
-    {
-        UE_LOG(LogTemp, Error, TEXT("Ball spawn failed!"));
-    }
+		if (Ball)
+		{
+			// 発射方向を渡す
+			Ball->InitVelocity(GetActorForwardVector());
+
+			UE_LOG(LogTemp, Warning, TEXT("Ball spawned and InitVelocity called!"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Ball spawn failed!"));
+		}
+	}
 }
 
-void ADog::Standerd(const FInputActionValue& Value)
+void ADog::LockOn(const FInputActionValue& Value)
 {
-
+	FVector Playerlocation = GetActorLocation();
+	AActor* BestNearTarget = nullptr;
 }
 
 
@@ -191,10 +217,53 @@ void ADog::Standerd(const FInputActionValue& Value)
 void ADog::Jump(const FInputActionValue& Value)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Jump"));
-	if (const bool v = Value.Get<bool>() && CanJump)
+	if (Value.Get<bool>())
 	{
-		Sphere->AddImpulse(FVector(0.0f, 0.0f, JumpForce), TEXT("None"), true);
-		CanJump = false;
+		//ジャンプ
+		ACharacter::Jump();
+		UE_LOG(LogTemp, Warning, TEXT("Jump triggered!"));
+	}
+}
+
+//クリックしたら動かす関数
+void ADog::MoveToMousePoint(const FInputActionValue& Value)
+{
+	if (!IsChangeAttack)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("changewalk"));
+		APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+		if (!PC)
+		{
+			return;
+		}
+
+		FHitResult Hit;
+		PC->GetHitResultUnderCursor(ECC_Visibility, false, Hit);
+
+		if (Hit.bBlockingHit)
+		{
+			FVector TargetLocation = Hit.ImpactPoint;
+
+			//NavMesh上を移動
+			UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), TargetLocation);
+
+			UE_LOG(LogTemp, Warning, TEXT("Moving to: %s"), *TargetLocation.ToString());
+		}
+	}
+}
+
+//モードの切り替え関数
+void ADog::Switch(const FInputActionValue& Value)
+{
+	if (!IsChangeAttack)
+	{
+		IsChangeAttack = true;
+		
+	}
+	else
+	{
+		IsChangeAttack = false;
+		
 	}
 }
 

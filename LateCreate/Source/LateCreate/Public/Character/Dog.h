@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
 #include "InputActionValue.h"
+#include "GameFramework/Character.h"
 #include "Dog.generated.h"
 
 
@@ -17,13 +17,14 @@ class UInputAction;
 
 
 UCLASS()
-class LATECREATE_API ADog : public APawn
+class LATECREATE_API ADog : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this pawn's properties
 	ADog();
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -61,15 +62,14 @@ protected:
 	//攻撃
 	void Attack(const FInputActionValue& Value);
 	//標準
-	void Standerd(const FInputActionValue& Value);
+	void LockOn(const FInputActionValue& Value);
 	//ジャンプ
 	void Jump(const FInputActionValue& Value);
 	//切り替え
 	void Switch(const FInputActionValue& Value);
-
+	//マウス移動
+	void MoveToMousePoint(const FInputActionValue& Value);
 private:
-	/** BallをControlする */
-	void ControlBall(const FInputActionValue& Value);
 
 	//LookInputAction
 	UPROPERTY(EditAnywhere,Category = Input,meta = (AllowPrivateAccess = "true"))
@@ -91,6 +91,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> SwitchAction;
 
+	//ClickInputAction
+	UPROPERTY(EditAnywhere, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> ClickAction;
+
 public:
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -105,12 +109,14 @@ private:
 	UPROPERTY(VisibleAnywhere,Category = "Componets")
 	USceneComponent* MuzzlePoint;
 
+	//移動目標クラス
+   /* UPROPERTY(EditDefaultsOnly,Category = "Move")
+	TSubclassOf<class AGoalPoint> GoalPointClass;*/
+
 //変数宣言
 private:
 	//スポーン位置調整
 	float Spawnlocation = 200.0f;
-	//ジャンプ力
-	float JumpForce = 500.0f;
 
      //ジャンプができるか判定
 	bool CanJump = false;
@@ -118,7 +124,18 @@ private:
 	//攻撃、移動切り替え
 	bool IsChangeAttack = false;//falseならば移動モード
 
-protected:
-	//HitEventをBindingする関数
-	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
+	FVector WorldLocation;
+	FVector WorldDirection;
+public:
+	// ジャンプ力
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dog|Movement")
+	float JumpForce = 1000.0f;
+
+	//ロックオンの範囲
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "LockOn")
+	float LockOnRange = 1000.0f;
+
+	//ロックオンアクター
+	UPROPERTY(BlueprintReadOnly, Category = "LockOn")
+	AActor* LockedTarget = nullptr;
 };
