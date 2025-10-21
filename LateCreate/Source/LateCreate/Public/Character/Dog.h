@@ -126,6 +126,12 @@ private:
 
 	FVector WorldLocation;
 	FVector WorldDirection;
+
+	//mesh‚Ì‘å‚«‚³•â³
+	float MeshScale = 0.3f;
+
+	//Šp“x•â³
+	float AngleCon = 90.0f;
 public:
 	// ƒWƒƒƒ“ƒv—Í
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dog|Movement")

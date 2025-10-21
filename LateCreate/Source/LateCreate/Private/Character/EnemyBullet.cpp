@@ -1,14 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Actor/BallActor.h"
+
+#include "Character/EnemyBullet.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "DrawDebugHelpers.h"
 
 // Sets default values
-ABallActor::ABallActor()
-{
+AEnemyBullet::AEnemyBullet()
+{PrimaryActorTick.bCanEverTick = true;
+
 	PrimaryActorTick.bCanEverTick = true;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
@@ -39,8 +41,8 @@ ABallActor::ABallActor()
 }
 
 // Called when the game starts or when spawned
-void ABallActor::BeginPlay()
-{
+void AEnemyBullet::BeginPlay()
+{	
 	Super::BeginPlay();
 
 	if (Movement)
@@ -60,7 +62,8 @@ void ABallActor::BeginPlay()
 	}
 }
 
-void ABallActor::InitVelocity(const FVector& ShootDir)
+// Called every frame
+void AEnemyBullet::InitVelocity(const FVector& ShootDir)
 {
 	if (Movement)
 	{

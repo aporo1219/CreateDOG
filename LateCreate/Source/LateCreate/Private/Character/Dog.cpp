@@ -26,20 +26,30 @@ ADog::ADog()
 	// 仮の見た目（エンジン内のSphereを使う）
 	USkeletalMeshComponent* CharacterMesh = GetMesh();
 
-	// SkeletalMeshがまだないので、StaticMeshを仮でアタッチ
+	//Mesh
+	UStaticMesh* DogMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/model/newdog.newdog"));
+	if (DogMesh)
+	{
+		// 新しいメッシュコンポーネントを作成
+		UStaticMeshComponent* VisualMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisualMesh"));
+		VisualMesh->SetStaticMesh(DogMesh);
 
-	UStaticMesh* TestMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere"));
-	UStaticMeshComponent* DummyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DummyMesh"));
-	DummyMesh->SetStaticMesh(TestMesh);
+		// ルート（CapsuleComponent）にアタッチ
+		VisualMesh->SetupAttachment(GetCapsuleComponent());
+		//大きさ変更
+		VisualMesh->SetRelativeScale3D(FVector(MeshScale));
+		// 向き・位置調整（モデルに合わせて調整OK）
+		VisualMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -AngleCon));
+		VisualMesh->SetRelativeRotation(FRotator(0.0f, AngleCon, 0.0f));
 
-	// Root（Capsule）にアタッチ
-	DummyMesh->SetupAttachment(RootComponent);
-
-	// 位置を少し下げる（地面に埋まらないように）
-	DummyMesh->SetRelativeLocation(FVector(50.0f,50.0f, -50.0f));
-
-	// コリジョンを無効にする（Capsuleが当たり判定担当）
-	DummyMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		// 衝突はカプセルで扱うため、StaticMesh側は無効に
+		VisualMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to load StaticMesh: /Game/model/newdog.newdog"));
+	}
+	
 	// MaterialをStaticMeshに設定する
 	UMaterial* Material = LoadObject<UMaterial>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial"));
 
@@ -193,6 +203,9 @@ void ADog::Attack(const FInputActionValue& Value)
 
 		if (Ball)
 		{
+			//発射方向をMuzzlePointの向き基準
+			FVector ShootDir = MuzzlePoint->GetForwardVector();
+
 			// 発射方向を渡す
 			Ball->InitVelocity(GetActorForwardVector());
 
