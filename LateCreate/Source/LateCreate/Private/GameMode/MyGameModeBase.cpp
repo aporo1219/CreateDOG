@@ -5,6 +5,7 @@
 #include "Controller/MainPlayerController.h"
 #include "Character/Dog.h"
 #include "Character/DogPlayer.h"
+#include "Framework/InGameHUD.h"
 
 AMyGameModeBase::AMyGameModeBase()
 {
@@ -17,4 +18,6 @@ AMyGameModeBase::AMyGameModeBase()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+
+	HUDClass = AInGameHUD::StaticClass();
 }

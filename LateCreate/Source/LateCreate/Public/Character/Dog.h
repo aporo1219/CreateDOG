@@ -132,6 +132,15 @@ private:
 
 	//角度補正
 	float AngleCon = 90.0f;
+
+	//速度
+	float Speed = 300.0f;
+
+	//体力
+	float Health = 100.0f;
+
+	//最大体力
+	float MaxHealth = 100.0f;
 public:
 	// ジャンプ力
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dog|Movement")
@@ -144,4 +153,9 @@ public:
 	//ロックオンアクター
 	UPROPERTY(BlueprintReadOnly, Category = "LockOn")
 	AActor* LockedTarget = nullptr;
+	//関数宣言
+	public:
+		float GetHealth() const { return Health; }
+		float GetHealthMax() const { return MaxHealth; }
+
 };
