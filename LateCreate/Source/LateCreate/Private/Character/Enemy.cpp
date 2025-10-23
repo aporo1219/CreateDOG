@@ -12,6 +12,7 @@ AEnemy::AEnemy()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+   
     EnemyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BodyMesh"));
     RootComponent = EnemyMesh;
 
@@ -20,6 +21,8 @@ AEnemy::AEnemy()
     MuzzlePoint->SetRelativeLocation(FVector(100.f, 0.f, 0.f)); // ‘O•û
 
     FloatingMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("FloatingMovement"));
+
+    Fire();
 }
 
 // Called when the game starts or when spawned
@@ -41,8 +44,11 @@ void AEnemy::Tick(float DeltaTime)
 //‹Ê”­ŽË
 void AEnemy::Fire()
 {
+  
+
     if (EnemyBulletClass)
     {
+        UE_LOG(LogTemp, Warning, TEXT("FireEnemy"));
         FVector SpawnLoc = MuzzlePoint->GetComponentLocation();
         FRotator SpawnRot = MuzzlePoint->GetComponentRotation();
         GetWorld()->SpawnActor<AEnemyBullet>(EnemyBulletClass, SpawnLoc, SpawnRot);

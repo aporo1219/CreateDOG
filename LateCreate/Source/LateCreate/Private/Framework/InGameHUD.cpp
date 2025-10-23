@@ -11,19 +11,36 @@ void AInGameHUD::BeginPlay()
 	Super::BeginPlay();
 
 	// WidgetBlueprintのClassを取得する
-	FString ScorePath = TEXT("/Game/BP/UI/UI.UI_C");
-	TSubclassOf<UUserWidget> ScoreClass = TSoftClassPtr<UUserWidget>(FSoftObjectPath(*ScorePath)).LoadSynchronous();
+	FString ScorePath = TEXT("/Game/BP/UI/UI.UI_C"); // ← Copy Referenceで確認
+	TSubclassOf<UUserWidget> ScoreClass =
+		TSoftClassPtr<UUserWidget>(FSoftObjectPath(*ScorePath)).LoadSynchronous();
 
 	// PlayerControllerを取得する
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
 	// WidgetClassとPlayerControllerが取得できたか判定する
-	if (ScoreClass && PlayerController)
+	if (!ScoreClass)
 	{
-		// Status表示用のWidgetを作成する
-		UUserWidget* StatusWidget = UWidgetBlueprintLibrary::Create(GetWorld(), ScoreClass, PlayerController);
+		UE_LOG(LogTemp, Error, TEXT("ScoreClass not found at %s"), *ScorePath);
+		return;
+	}
 
-		// Viewportに追加する
+	if (!PlayerController)
+	{
+		UE_LOG(LogTemp, Error, TEXT("PlayerController not found!"));
+		return;
+	}
+
+	// Widgetを作成
+	UUserWidget* StatusWidget = CreateWidget<UUserWidget>(PlayerController, ScoreClass);
+
+	if (StatusWidget)
+	{
 		StatusWidget->AddToViewport(0);
+		UE_LOG(LogTemp, Log, TEXT("StatusWidget created successfully."));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to create StatusWidget!"));
 	}
 }

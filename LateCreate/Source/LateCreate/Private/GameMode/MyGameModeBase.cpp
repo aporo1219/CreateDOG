@@ -6,11 +6,12 @@
 #include "Character/Dog.h"
 #include "Character/DogPlayer.h"
 #include "Framework/InGameHUD.h"
+#include "UI/Score.h"
+#include "Blueprint/UserWidget.h"
+#include "Kismet/GameplayStatics.h"
 
 AMyGameModeBase::AMyGameModeBase()
 {
-	//プレイヤーコントローラーの指定
-	//PlayerControllerClass = AMainPlayerController::StaticClass();
 
     //最初のPawnの設定
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/BP/BPDog"));
@@ -20,4 +21,26 @@ AMyGameModeBase::AMyGameModeBase()
 	}
 
 	HUDClass = AInGameHUD::StaticClass();
+}
+
+void AMyGameModeBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	RemainingTime = MaxTime;
+
+	//1秒ごとにUpdateTimeを呼ぶ
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AMyGameModeBase::UpdateTime, 1.0f, true);
+}
+
+//制限時間処理関数
+void AMyGameModeBase::UpdateTime()
+{
+	RemainingTime -= 1.0f;
+
+	if (RemainingTime <= 0)
+	{
+		RemainingTime = 0;
+		GetWorldTimerManager().ClearTimer(TimerHandle);
+	}
 }

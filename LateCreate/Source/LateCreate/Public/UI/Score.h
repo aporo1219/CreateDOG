@@ -23,23 +23,21 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* TextMaxHealth;
 
-	//時間UI
+	////時間UI
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* TextTime;
 
-	//残りの敵数UI
-	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* TextRemainEnemy;
+	////残りの敵数UI
+	//UPROPERTY(meta = (BindWidget))
+	//class UTextBlock* TextRemainEnemy;
 
-	//スコアUI
-	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* TextScore;
+	////スコアUI
+	//UPROPERTY(meta = (BindWidget))
+	//class UTextBlock* TextScore;
 
 protected:
 	//ネイティブコンストラクト
 	virtual void NativeConstruct() override;
-	//初期化
-	bool Initialize() override;
 
 private:
 	//残り体力
@@ -48,13 +46,23 @@ private:
 	//最大体力
 	UFUNCTION()
 	FText SetTextMaxHealth();
-	//時間
+	////時間
 	UFUNCTION()
 	FText SetTextTime();
-	//残りの敵数
-	UFUNCTION()
-	FText SetTextRemainEnemy();
-	//スコア
-	UFUNCTION()
-	FText SetTextScore();
+	////残りの敵数
+	/*UFUNCTION()
+	FText SetTextRemainEnemy();*/
+	////スコア
+	//UFUNCTION()
+	//FText SetTextScore();"
+private:
+	//関数宣言
+	UFUNCTION(BlueprintCallable, category = "UI")
+	bool IsTimeLow() const;
+
+	//アニメーション参照変数
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* BlinkAnim;
+	//変数宣言
+	float RedTimeText = 10.0f;
 };

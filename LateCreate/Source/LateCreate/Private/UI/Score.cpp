@@ -4,29 +4,31 @@
 #include "UI/Score.h"
 #include "Components/TextBlock.h"
 #include "Character/Dog.h"
+#include "GameMode/MyGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 
 void UScore :: NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	if (TextHealth)
+	{
+		//バインド
+		TextHealth->TextDelegate.BindUFunction(this, "SetTextHealth");
+	}
+	if (TextMaxHealth)
+	{
+		//バインド
+		TextMaxHealth->TextDelegate.BindUFunction(this, "SetTextMaxHealth");
+	}
+	if (TextTime)
+	{
+		//バインド
+		TextTime->TextDelegate.BindUFunction(this, "SetTextTime");
+	}
 }
 
-bool UScore::Initialize()
-{
-	bool Success = Super::Initialize();
 
-	if (!Success)
-		return false;
-
-	//バインド
-	TextHealth->TextDelegate.BindUFunction(this, "SetTextHealth");
-	TextMaxHealth->TextDelegate.BindUFunction(this, "SetTextMaxHealth");
-	TextTime->TextDelegate.BindUFunction(this, "SetTextTime");
-	TextRemainEnemy->TextDelegate.BindUFunction(this, "SetTextRemainenemy");
-	TextScore->TextDelegate.BindUFunction(this, "SetTextScore");
-
-	return true;
-}
 
 FText UScore::SetTextHealth()
 {
@@ -52,37 +54,50 @@ FText UScore::SetTextMaxHealth()
 	return FText();
 }
 
+
 FText UScore::SetTextTime()
 {
-	//dogの取得
-	if (const ADog* Dog = Cast<ADog>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+	//GameModeBaseの取得
+	if (const AMyGameModeBase* GameMode = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld())))
 	{
-		//体力の設定
-		return FText::FromString(FString::FromInt((int)Dog->GetHealth()));
+	    // 制限時間の取得（変数に直接アクセス or Getter関数）
+		return FText::FromString(FString::FromInt((float)GameMode->GetRemainingTime()));
 	}
 
 	return FText();
 }
 
-FText UScore::SetTextRemainEnemy()
+//１０秒以内になったら点滅させる処理の関数
+bool UScore::IsTimeLow() const
 {
-	//dogの取得
-	if (const ADog* Dog = Cast<ADog>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+	if (const AMyGameModeBase* GameMode = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld())))
 	{
-		//体力の設定
-		return FText::FromString(FString::FromInt((int)Dog->GetHealthMax()));
-	}
 
-	return FText();
-}
-FText UScore::SetTextScore()
-{
-	//dogの取得
-	if (const ADog* Dog = Cast<ADog>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
-	{
-		//体力の設定
-		return FText::FromString(FString::FromInt((int)Dog->GetHealth()));
+		return GameMode->GetRemainingTime() <= RedTimeText;
 	}
-
-	return FText();
+	return false;
 }
+
+//
+//FText UScore::SetTextRemainEnemy()
+//{
+//	//dogの取得
+//	if (const ADog* Dog = Cast<ADog>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+//	{
+//		//体力の設定
+//		return FText::FromString(FString::FromInt((int)Dog->GetHealthMax()));
+//	}
+//
+//	return FText();
+//}
+//FText UScore::SetTextScore()
+//{
+//	//dogの取得
+//	if (const ADog* Dog = Cast<ADog>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+//	{
+//		//体力の設定
+//		return FText::FromString(FString::FromInt((int)Dog->GetHealth()));
+//	}
+//
+//	return FText();
+//}

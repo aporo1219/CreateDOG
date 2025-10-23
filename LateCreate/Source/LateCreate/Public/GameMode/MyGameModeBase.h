@@ -10,6 +10,8 @@
  * 
  */
 
+class UScore;
+
 UCLASS()
 class LATECREATE_API AMyGameModeBase : public AGameModeBase
 {
@@ -17,4 +19,32 @@ class LATECREATE_API AMyGameModeBase : public AGameModeBase
 	
 public:
 	AMyGameModeBase();
+
+public: 
+	virtual void BeginPlay() override;
+
+protected:
+	//•Ï”éŒ¾
+	UPROPERTY(EditDefaultsOnly,Category = "Timer")
+	float MaxTime = 60.0f;
+
+	
+
+	FTimerHandle TimerHandle;
+
+	UPROPERTY()
+	UScore* TimeUI;
+
+	//ƒNƒ‰ƒXéŒ¾
+	UPROPERTY(EditDefaultsOnly,Category = "UI")
+	TSubclassOf<UScore> UScoreClass;
+
+	void UpdateTime();
+
+	
+public:
+	//•Ï”éŒ¾
+	float GetRemainingTime() const { return RemainingTime; }
+
+	float RemainingTime;
 };
