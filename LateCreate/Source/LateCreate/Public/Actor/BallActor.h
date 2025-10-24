@@ -29,7 +29,11 @@ public:
 	//‹Ê‚Ì“®‚«
 	void InitVelocity(const FVector& ShootDir);
 
-
+	//“–‚½‚è”»’è
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, FVector NormalImpulse,
+		const FHitResult& Hit);
 
 private:
 	float I_Speed = 3000.0f;

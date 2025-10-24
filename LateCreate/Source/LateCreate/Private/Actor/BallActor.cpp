@@ -19,6 +19,8 @@ ABallActor::ABallActor()
 	Mesh->SetCollisionProfileName(TEXT("BlockAllDynamic"));
 	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
+	Mesh->OnComponentHit.AddDynamic(this, &ABallActor::OnHit);
+
 	// ƒƒbƒVƒ…İ’è
 	UStaticMesh* SphereMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere"));
 	if (SphereMesh)
@@ -77,3 +79,20 @@ void ABallActor::InitVelocity(const FVector& ShootDir)
 		UE_LOG(LogTemp, Error, TEXT("ProjectileMovement is NULL!"));
 	}
 }
+
+void ABallActor::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, FVector NormalImpulse,
+	const FHitResult& Hit)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Hit"));
+	if (OtherActor && OtherActor != this)
+	{
+		if (OtherActor->ActorHasTag("Enemy"))
+		{
+			OtherActor->Destroy(); // “G‚ğÁ‚·
+		}
+
+		Destroy(); // ‹Ê‚àÁ‚·
+	}
+}
+

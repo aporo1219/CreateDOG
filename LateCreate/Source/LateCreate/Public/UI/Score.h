@@ -60,9 +60,8 @@ private:
 	UFUNCTION(BlueprintCallable, category = "UI")
 	bool IsTimeLow() const;
 
-	//アニメーション参照変数
-	UPROPERTY(Transient, meta = (BindWidgetAnim))
-	UWidgetAnimation* BlinkAnim;
+	UFUNCTION()
+	void UpdateHealthText();
 	//変数宣言
 	float RedTimeText = 10.0f;
 };

@@ -51,13 +51,12 @@ ADog::ADog()
 	}
 	
 	// MaterialをStaticMeshに設定する
-	UMaterial* Material = LoadObject<UMaterial>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial"));
-
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Pawn"));
-	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Block);
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore); // マウスクリック判定用
-
+	UCapsuleComponent* Capsule = GetCapsuleComponent();
+	Capsule->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	Capsule->SetCollisionObjectType(ECC_Pawn);
+	Capsule->SetCollisionResponseToAllChannels(ECR_Ignore);
+	Capsule->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+	Capsule->SetGenerateOverlapEvents(true);
 	//HitEvenntを有効にする
 	GetCapsuleComponent()->BodyInstance.bNotifyRigidBodyCollision = true;
 
@@ -133,6 +132,9 @@ void ADog::BeginPlay()
 		PC->bShowMouseCursor = true;
 		PC->SetInputMode(FInputModeGameAndUI());
 	}
+
+	//HPの初期化
+	Health = MaxHealth;
 }
 
 // Called every frame
@@ -278,5 +280,23 @@ void ADog::Switch(const FInputActionValue& Value)
 		IsChangeAttack = false;
 		
 	}
+}
+
+//ダメージ処理関数
+void ADog::TakeDamege(float DamegeAmount)
+{
+	Health -= DamegeAmount;
+	
+	//ゲームオーバー処理
+	if (Health < 0)
+	{
+		Health = 0;
+		
+
+		//UIへ通知
+		OnHealthChanged.Broadcast();
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Dog HP: %f"), Health);
 }
 

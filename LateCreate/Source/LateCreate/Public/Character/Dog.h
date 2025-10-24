@@ -153,9 +153,17 @@ public:
 	//ロックオンアクター
 	UPROPERTY(BlueprintReadOnly, Category = "LockOn")
 	AActor* LockedTarget = nullptr;
+	
 	//関数宣言
-	public:
-		float GetHealth() const { return Health; }
-		float GetHealthMax() const { return MaxHealth; }
+    float GetHealth() const { return Health; }
+    float GetHealthMax() const { return MaxHealth; }
 
+	//ダメージ処理関数
+	UFUNCTION()
+	void TakeDamege(float DamegeAmount);
+
+	// 体力変更時のイベント
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHealthChanged);
+	UPROPERTY(BlueprintAssignable, Category = "Event")
+	FOnHealthChanged OnHealthChanged;
 };

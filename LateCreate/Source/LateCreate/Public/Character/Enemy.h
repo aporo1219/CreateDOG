@@ -41,4 +41,16 @@ public:
 
 	//‹Ê‚Ì”­ËŠÖ”
 	void Fire();
+
+	UFUNCTION()
+	void InitializeEnemy();
+
+private:
+	FTimerHandle FireTimerHandle;
+
+	//•Ï”éŒ¾
+	float FirstBullet1 = 2.0f;
+	float FirstBullet2 = 4.0f;
+	float BulletCoolTime1 = 5.0f;
+	float BulletCoolTime2 = 7.0f;
 };

@@ -26,6 +26,16 @@ void UScore :: NativeConstruct()
 		//バインド
 		TextTime->TextDelegate.BindUFunction(this, "SetTextTime");
 	}
+
+	// Dogを取得
+	if (ADog* Dog = Cast<ADog>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+	{
+		// イベントにバインド
+		Dog->OnHealthChanged.AddDynamic(this, &UScore::UpdateHealthText);
+
+		// 初期表示
+		UpdateHealthText();
+	}
 }
 
 
@@ -60,7 +70,7 @@ FText UScore::SetTextTime()
 	//GameModeBaseの取得
 	if (const AMyGameModeBase* GameMode = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld())))
 	{
-	    // 制限時間の取得（変数に直接アクセス or Getter関数）
+		// 制限時間の取得（変数に直接アクセス or Getter関数）
 		return FText::FromString(FString::FromInt((float)GameMode->GetRemainingTime()));
 	}
 
@@ -101,3 +111,19 @@ bool UScore::IsTimeLow() const
 //
 //	return FText();
 //}
+
+//体力UIの更新
+void UScore::UpdateHealthText()
+{
+	if (const ADog* Dog = Cast<ADog>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+	{
+		if (TextHealth)
+		{
+			TextHealth->SetText(FText::FromString(FString::FromInt((int)Dog->GetHealth())));
+		}
+		if (TextMaxHealth)
+		{
+			TextMaxHealth->SetText(FText::FromString(FString::FromInt((int)Dog->GetHealthMax())));
+		}
+	}
+}
