@@ -25,7 +25,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	class UProjectileMovementComponent* Movement;
 public:
@@ -42,9 +42,12 @@ public:
 		bool bFromSweep,
 		const FHitResult& SweepResult);
 
+	//•Ï”éŒ¾
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	float Damege = 10.0f;
+
 	//•Ï”
 private:
 	float I_Speed = 3000.0f;
 	float Max_Speed = 3000.0f;
-	float Damege = 10.0f;
 };

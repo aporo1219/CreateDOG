@@ -100,8 +100,6 @@ void AEnemy::Fire()
     if (!DogChara || !EnemyBulletClass)
         return;
     
-    // ログ確認
-    UE_LOG(LogTemp, Warning, TEXT("Enemy Fire toward player!"));
     //発射位置
     FVector SpawnLoc = MuzzlePoint->GetComponentLocation();
 

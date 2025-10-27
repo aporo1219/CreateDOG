@@ -23,6 +23,8 @@ ADog::ADog()
 	// ACharacterにはデフォルトでCapsuleComponentがRoot
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.f);
 
+	RootComponent = GetCapsuleComponent();
+
 	// 仮の見た目（エンジン内のSphereを使う）
 	USkeletalMeshComponent* CharacterMesh = GetMesh();
 
@@ -44,6 +46,9 @@ ADog::ADog()
 
 		// 衝突はカプセルで扱うため、StaticMesh側は無効に
 		VisualMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+		// 追加：メッシュで物理シミュレートがONになっていないことを保証
+		VisualMesh->SetSimulatePhysics(false);
 	}
 	else
 	{
@@ -54,11 +59,14 @@ ADog::ADog()
 	UCapsuleComponent* Capsule = GetCapsuleComponent();
 	Capsule->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	Capsule->SetCollisionObjectType(ECC_Pawn);
-	Capsule->SetCollisionResponseToAllChannels(ECR_Ignore);
+
+	// 全部無視ではなく、必要なものを個別に設定
+	Capsule->SetCollisionResponseToAllChannels(ECR_Block);
+	Capsule->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	Capsule->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+	Capsule->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+
 	Capsule->SetGenerateOverlapEvents(true);
-	//HitEvenntを有効にする
-	GetCapsuleComponent()->BodyInstance.bNotifyRigidBodyCollision = true;
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
@@ -296,6 +304,9 @@ void ADog::TakeDamege(float DamegeAmount)
 		//UIへ通知
 		OnHealthChanged.Broadcast();
 	}
+
+	//UIへ通知
+	OnHealthChanged.Broadcast();
 
 	UE_LOG(LogTemp, Warning, TEXT("Dog HP: %f"), Health);
 }
