@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Actor/BallActor.h"
+#include "Character/Enemy.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
@@ -84,15 +85,28 @@ void ABallActor::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 	const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Hit"));
-	if (OtherActor && OtherActor != this)
+	//UE_LOG(LogTemp, Warning, TEXT("Hit"));
+	/*if (OtherActor->ActorHasTag("Enemy"))
 	{
-		if (OtherActor->ActorHasTag("Enemy"))
-		{
-			OtherActor->Destroy(); // “G‚ðÁ‚·
-		}
-
-		Destroy(); // ‹Ê‚àÁ‚·
+		UE_LOG(LogTemp, Warning, TEXT("Hit Enemy! Destroying it."));
+		OtherActor->Destroy();
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Hit actor has NO Enemy tag! Tag count: %d"), OtherActor->Tags.Num());
+		for (auto Tag : OtherActor->Tags)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Tag: %s"), *Tag.ToString());
+		}
+	}*/
+
+	UE_LOG(LogTemp, Warning, TEXT("OnHit called! Actor: %s"), *OtherActor->GetName());
+
+	if (AEnemy* Enemy = Cast<AEnemy>(OtherActor))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Hit AEnemy class! Destroying it."));
+		Enemy->Destroy();
+	}
+	
 }
 
