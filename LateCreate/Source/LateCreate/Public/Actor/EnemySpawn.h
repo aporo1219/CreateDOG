@@ -34,9 +34,27 @@ public:
 	UFUNCTION(BlueprintCallable,Category = "Spawn")
 	void SpawnEnemy();
 
+	//敵死亡チェック関数
+	UFUNCTION()
+	void OnEnemyKilled(AActor* DeadEnemy);
+
+	/** 全滅後に復活 */
+	void RespawnEnemies();
+
 	//変数宣言
-	//スポーンタイマー
-	FTimerHandle SpawnTimeHandle;
-	UPROPERTY(EditAnywhere,Category = "Spawn")
-	float SpawnTime = 5.0f;
+	// スポーン上限
+	UPROPERTY(EditAnywhere, Category = "Spawn")
+	int32 MaxEnemyCount = 5;
+
+
+	/** 全滅後の復活までの遅延時間（秒） */
+	UPROPERTY(EditAnywhere, Category = "Spawn")
+	float RespawnDelay = 2.f;
+
+	/** 生成した敵の配列 */
+	UPROPERTY()
+	TArray<AEnemy*> SpawnedEnemies;
+
+	/** 復活用タイマー */
+	FTimerHandle RespawnTimerHandle;
 };

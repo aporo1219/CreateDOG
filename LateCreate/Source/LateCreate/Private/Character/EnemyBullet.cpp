@@ -72,13 +72,13 @@ void AEnemyBullet::InitVelocity(const FVector& ShootDir)
 {
 	if (Movement)
 	{
-		const FVector LaunchVel = ShootDir.GetSafeNormal() * Movement->InitialSpeed;
-		Movement->Velocity = LaunchVel;
-		Movement->SetVelocityInLocalSpace(LaunchVel);
+		Movement->Velocity = ShootDir * Movement->InitialSpeed;
+
 		Movement->Activate(true);
 
+		SetActorRotation(ShootDir.Rotation());
+
 		UE_LOG(LogTemp, Warning, TEXT("InitVelocity called: %s"), *Movement->Velocity.ToString());
-		DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + LaunchVel * 0.01f, FColor::Red, false, 2.0f, 0, 2.0f);
 	}
 	else
 	{

@@ -6,6 +6,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "DrawDebugHelpers.h"
+#include "Kismet/GameplayStatics.h"
+#include "Gamemode/MyGameModeBase.h"
 
 // Sets default values
 ABallActor::ABallActor()
@@ -67,11 +69,10 @@ void ABallActor::InitVelocity(const FVector& ShootDir)
 {
 	if (Movement)
 	{
-		const FVector LaunchVel = ShootDir.GetSafeNormal() * Movement->InitialSpeed;
+		FVector LaunchVel = ShootDir * Movement->InitialSpeed;
 		Movement->Velocity = LaunchVel;
-		Movement->SetVelocityInLocalSpace(LaunchVel);
 		Movement->Activate(true);
-
+		SetActorRotation(ShootDir.Rotation());
 		UE_LOG(LogTemp, Warning, TEXT("InitVelocity called: %s"), *Movement->Velocity.ToString());
 		DrawDebugLine(GetWorld(), GetActorLocation(), GetActorLocation() + LaunchVel * 0.01f, FColor::Red, false, 2.0f, 0, 2.0f);
 	}
@@ -85,28 +86,30 @@ void ABallActor::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 	const FHitResult& Hit)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("Hit"));
-	/*if (OtherActor->ActorHasTag("Enemy"))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Hit Enemy! Destroying it."));
-		OtherActor->Destroy();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Hit actor has NO Enemy tag! Tag count: %d"), OtherActor->Tags.Num());
-		for (auto Tag : OtherActor->Tags)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Tag: %s"), *Tag.ToString());
-		}
-	}*/
 
 	UE_LOG(LogTemp, Warning, TEXT("OnHit called! Actor: %s"), *OtherActor->GetName());
 
 	if (AEnemy* Enemy = Cast<AEnemy>(OtherActor))
 	{
+		Enemy->TakeDamegeAndDie();
 		UE_LOG(LogTemp, Warning, TEXT("Hit AEnemy class! Destroying it."));
-		Enemy->Destroy();
+		AMyGameModeBase* GM = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+		if (GM)
+		{
+			GM->Score += HitScore;
+			//スコアが0以下になったら0にする
+			if (GM->Score < 0)
+			{
+				GM->Score = 0;
+				//UI通知
+				OnScoreChanged.Broadcast();
+			}
+		}
+		//UI通知
+		OnScoreChanged.Broadcast();
 	}
 	
+	// 弾自身も消す
+	Destroy();
 }
 

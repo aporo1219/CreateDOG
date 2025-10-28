@@ -41,10 +41,20 @@ protected:
 
 	void UpdateTime();
 
+	void AddScore(int32 Value);
+
 	
 public:
 	//ïœêîêÈåæ
 	float GetRemainingTime() const { return RemainingTime; }
+	int32  GetScore() const { return Score; }
 
 	float RemainingTime;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Score")
+	int32 Score = 1000;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnScoreChanged);
+	UPROPERTY(BlueprintAssignable, Category = "Event")
+	FOnScoreChanged OnScoreChanged;
 };

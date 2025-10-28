@@ -45,12 +45,17 @@ public:
 	UFUNCTION()
 	void InitializeEnemy();
 
-private:
+public:
 	FTimerHandle FireTimerHandle;
 
 	//•Ï”éŒ¾
 	float FirstBullet1 = 2.0f;
 	float FirstBullet2 = 4.0f;
 	float BulletCoolTime1 = 5.0f;
-	float BulletCoolTime2 = 7.0f;
+	float BulletCoolTime2 = 10.0f;
+
+	//ŠÖ”éŒ¾
+	void TakeDamegeAndDie();
+
+	void Respawn();
 };

@@ -19,7 +19,7 @@ void AEnemySpawn::BeginPlay()
 {
 	Super::BeginPlay();
 	// BeginPlayでタイマーを開始し、繰り返しSpawnEnemyを呼び出す
-	GetWorldTimerManager().SetTimer(SpawnTimeHandle, this, &AEnemySpawn::SpawnEnemy, SpawnTime, true);
+    SpawnEnemy();
 }
 
 // Called every frame
@@ -31,15 +31,69 @@ void AEnemySpawn::Tick(float DeltaTime)
 
 void AEnemySpawn::SpawnEnemy()
 {
-	if (EnemeyClass)
-	{
-		//スポーン位置
-		FVector SpawnLoc = GetActorLocation();
-		FRotator SpawnRot = GetActorRotation();
+	
+        int32 NumToSpawn = MaxEnemyCount;
 
+        for (int32 i = 0; i < MaxEnemyCount; i++)
+        {
+            FVector SpawnLoc = GetActorLocation() + FVector(
+                FMath::FRandRange(-2000.f, 2000.f),
+                FMath::FRandRange(-2000.f, 2000.f),
+                FMath::FRandRange(0.f, 200.f)
+            );
 
-		// 敵をワールドにスポーンさせる
-		GetWorld()->SpawnActor<AEnemy>(EnemeyClass, SpawnLoc, SpawnRot);
-	}
+            FRotator SpawnRot = GetActorRotation();
+
+            AEnemy* NewEnemy = GetWorld()->SpawnActor<AEnemy>(EnemeyClass, SpawnLoc, SpawnRot);
+            if (NewEnemy)
+            {
+                NewEnemy->SetOwner(this); // Spawn通知用
+                SpawnedEnemies.Add(NewEnemy);
+            }
+        }
+    
+	
 }
+
+// 敵が倒されたら呼ばれる
+void AEnemySpawn::OnEnemyKilled(AActor* DeadEnemy)
+{
+    // 現在の敵をチェック（非表示も含める場合はタグなどで管理）
+    bool bAnyVisible = false;
+
+    for (AActor* EnemyActor : SpawnedEnemies)
+    {
+        if (EnemyActor && !EnemyActor->IsHidden())
+        {
+            bAnyVisible = true;
+            break;
+        }
+    }
+
+    if (!bAnyVisible)
+    {
+        // 全滅したら一定時間後に復活
+        GetWorldTimerManager().SetTimer(RespawnTimerHandle, this, &AEnemySpawn::RespawnEnemies, RespawnDelay, false);
+    }
+}
+
+void AEnemySpawn::RespawnEnemies()
+{
+   for (AEnemy* Enemy : SpawnedEnemies)
+   {
+      if (Enemy)
+      {
+          // ランダムに位置をずらす場合
+          FVector BaseLoc = GetActorLocation();
+          float RandX = FMath::FRandRange(-2000.f, 2000.f);
+          float RandY = FMath::FRandRange(-2000.f, 2000.f);
+          float RandZ = FMath::FRandRange(0.f, 200.f);
+          Enemy->SetActorLocation(BaseLoc + FVector(RandX, RandY, RandZ));
+
+          // 復活処理
+          Enemy->Respawn();
+      }
+   }
+}
+
 

@@ -35,8 +35,14 @@ public:
 		UPrimitiveComponent* OtherComp, FVector NormalImpulse,
 		const FHitResult& Hit);
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnScoreChanged);
+	UPROPERTY(BlueprintAssignable, Category = "Event")
+	FOnScoreChanged OnScoreChanged;
+
 private:
 	float I_Speed = 3000.0f;
 	float Max_Speed = 3000.0f;
+	float HitScore = 100.0f;
 
+	
 };

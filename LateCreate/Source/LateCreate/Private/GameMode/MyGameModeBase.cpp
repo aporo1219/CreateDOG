@@ -44,3 +44,14 @@ void AMyGameModeBase::UpdateTime()
 		GetWorldTimerManager().ClearTimer(TimerHandle);
 	}
 }
+
+//ƒXƒRƒAˆ—ŠÖ”
+void AMyGameModeBase::AddScore(int32 Value)
+{
+	Score += Value;
+
+	if (Score < 0)
+	{
+		Score = 0;
+	}
+}

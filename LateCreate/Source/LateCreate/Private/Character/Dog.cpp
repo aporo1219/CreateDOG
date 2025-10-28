@@ -13,6 +13,7 @@
 #include "Blueprint/AIBlueprintHelperLibrary.h"//NavMesh移動に必要なインクルード
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameMode/MyGameModeBase.h"
 
 // Sets default values
 ADog::ADog()
@@ -25,6 +26,40 @@ ADog::ADog()
 
 	RootComponent = GetCapsuleComponent();
 
+
+	HeadCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HeadCollision"));
+	HeadCollision->SetupAttachment(GetMesh(), FName("head")); // headボーンにアタッチ
+	HeadCollision->SetCapsuleSize(12.f, 15.f);
+	HeadCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
+	HeadCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+	// --- 前足（左） ---
+	FrontLeftLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("FrontLeftLegCollision"));
+	FrontLeftLegCollision->SetupAttachment(GetMesh(), FName("front_left_leg"));
+	FrontLeftLegCollision->SetCapsuleSize(6.f, 12.f);
+	FrontLeftLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
+	FrontLeftLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+	// --- 前足（右） ---
+	FrontRightLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("FrontRightLegCollision"));
+	FrontRightLegCollision->SetupAttachment(GetMesh(), FName("front_right_leg"));
+	FrontRightLegCollision->SetCapsuleSize(6.f, 12.f);
+	FrontRightLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
+	FrontRightLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+	// --- 後足（左） ---
+	BackLeftLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("BackLeftLegCollision"));
+	BackLeftLegCollision->SetupAttachment(GetMesh(), FName("back_left_leg"));
+	BackLeftLegCollision->SetCapsuleSize(6.f, 12.f);
+	BackLeftLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
+	BackLeftLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+	// --- 後足（右） ---
+	BackRightLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("BackRightLegCollision"));
+	BackRightLegCollision->SetupAttachment(GetMesh(), FName("back_right_leg"));
+	BackRightLegCollision->SetCapsuleSize(6.f, 12.f);
+	BackRightLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
+	BackRightLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	// 仮の見た目（エンジン内のSphereを使う）
 	USkeletalMeshComponent* CharacterMesh = GetMesh();
 
@@ -201,30 +236,56 @@ void ADog::Attack(const FInputActionValue& Value)
 	if (IsChangeAttack)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("changeattack"));
-		//スポーン値
-		FActorSpawnParameters Params;
-		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		//位置の設定
-		FVector SpawnLoc = GetActorLocation() + GetActorForwardVector() * Spawnlocation;
-		FRotator SpawnRot = GetActorRotation();
-
-		ABallActor* Ball = GetWorld()->SpawnActor<ABallActor>(BallActorClass, SpawnLoc, SpawnRot, Params);
-
-		if (Ball)
+		AMyGameModeBase* GM = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+		if (GM)
 		{
-			//発射方向をMuzzlePointの向き基準
-			FVector ShootDir = MuzzlePoint->GetForwardVector();
-
-			// 発射方向を渡す
-			Ball->InitVelocity(GetActorForwardVector());
-
-			UE_LOG(LogTemp, Warning, TEXT("Ball spawned and InitVelocity called!"));
+			GM->Score -= ShootScore;
+			//スコアが0以下になったら0にする
+			if (GM->Score < 0)
+			{
+				GM->Score = 0;
+				//UI通知
+				OnScoreChanged.Broadcast();
+			}
 		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("Ball spawn failed!"));
-		}
+		//UI通知
+		OnScoreChanged.Broadcast();
+
+		// カメラ取得
+		APlayerController* PC = Cast<APlayerController>(GetController());
+		if (!PC) return;
+
+		// 銃口位置と向きを取得
+		FVector MuzzleLoc = MuzzlePoint->GetComponentLocation();
+		FRotator MuzzleRot = MuzzlePoint->GetComponentRotation();
+
+		// 弾の進行方向（銃口のForwardベクトル）
+		FVector ShootDir = MuzzlePoint->GetForwardVector();
+
+		// 弾生成
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		ABallActor* Ball = GetWorld()->SpawnActor<ABallActor>(BallActorClass, MuzzleLoc, MuzzleRot, SpawnParams);
+
+
+			if (Ball)
+			{
+
+				// 発射方向を渡す
+				Ball->InitVelocity(ShootDir);
+				Ball->SetOwner(this);
+
+				UE_LOG(LogTemp, Warning, TEXT("Ball spawned! Dir: %s"), *ShootDir.ToString());
+				UE_LOG(LogTemp, Warning, TEXT("Ball spawned and InitVelocity called!"));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("Ball spawn failed!"));
+			}
+
+			
 	}
 }
 

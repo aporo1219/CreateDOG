@@ -27,13 +27,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* TextTime;
 
-	////残りの敵数UI
-	//UPROPERTY(meta = (BindWidget))
-	//class UTextBlock* TextRemainEnemy;
-
 	////スコアUI
-	//UPROPERTY(meta = (BindWidget))
-	//class UTextBlock* TextScore;
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* TextScore;
 
 protected:
 	//ネイティブコンストラクト
@@ -49,12 +45,9 @@ private:
 	////時間
 	UFUNCTION()
 	FText SetTextTime();
-	////残りの敵数
-	/*UFUNCTION()
-	FText SetTextRemainEnemy();*/
-	////スコア
-	//UFUNCTION()
-	//FText SetTextScore();"
+	//スコア
+	UFUNCTION()
+	FText SetTextScore();
 private:
 	//関数宣言
 	UFUNCTION(BlueprintCallable, category = "UI")
@@ -62,6 +55,12 @@ private:
 
 	UFUNCTION()
 	void UpdateHealthText();
+
+	UFUNCTION()
+	void UpdateScoreText();
+
 	//変数宣言
 	float RedTimeText = 10.0f;
+
+	float Score = 1000.0f;
 };

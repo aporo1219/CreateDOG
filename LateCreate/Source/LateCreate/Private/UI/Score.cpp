@@ -26,7 +26,11 @@ void UScore :: NativeConstruct()
 		//バインド
 		TextTime->TextDelegate.BindUFunction(this, "SetTextTime");
 	}
-
+	if (TextScore)
+	{
+		//バインド
+		TextScore->TextDelegate.BindUFunction(this, "SetTextScore");
+	}
 	// Dogを取得
 	if (ADog* Dog = Cast<ADog>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
 	{
@@ -35,7 +39,19 @@ void UScore :: NativeConstruct()
 
 		// 初期表示
 		UpdateHealthText();
+
+		
 	}
+	if (AMyGameModeBase* GM = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld())))
+	{
+		// イベントにバインド
+		GM->OnScoreChanged.AddDynamic(this, &UScore::UpdateScoreText);
+
+		
+		UpdateScoreText();
+
+	}
+	
 }
 
 
@@ -60,6 +76,7 @@ FText UScore::SetTextMaxHealth()
 		//体力の設定
 		return FText::FromString(FString::FromInt((int)Dog->GetHealthMax()));
 	}
+
 
 	return FText();
 }
@@ -88,29 +105,18 @@ bool UScore::IsTimeLow() const
 	return false;
 }
 
-//
-//FText UScore::SetTextRemainEnemy()
-//{
-//	//dogの取得
-//	if (const ADog* Dog = Cast<ADog>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
-//	{
-//		//体力の設定
-//		return FText::FromString(FString::FromInt((int)Dog->GetHealthMax()));
-//	}
-//
-//	return FText();
-//}
-//FText UScore::SetTextScore()
-//{
-//	//dogの取得
-//	if (const ADog* Dog = Cast<ADog>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
-//	{
-//		//体力の設定
-//		return FText::FromString(FString::FromInt((int)Dog->GetHealth()));
-//	}
-//
-//	return FText();
-//}
+//スコア
+FText UScore::SetTextScore()
+{
+	if (const AMyGameModeBase* GameMode = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld())))
+	{
+		// 制限時間の取得（変数に直接アクセス or Getter関数）
+		return FText::FromString(FString::FromInt((float)GameMode->GetScore()));
+	}
+
+
+	return FText();
+}
 
 //体力UIの更新
 void UScore::UpdateHealthText()
@@ -125,5 +131,15 @@ void UScore::UpdateHealthText()
 		{
 			TextMaxHealth->SetText(FText::FromString(FString::FromInt((int)Dog->GetHealthMax())));
 		}
+	}
+}
+
+//スコアUIの更新
+void UScore::UpdateScoreText()
+{
+	AMyGameModeBase* GM = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (GM && TextScore)
+	{
+		TextScore->SetText(FText::AsNumber(GM->Score));
 	}
 }

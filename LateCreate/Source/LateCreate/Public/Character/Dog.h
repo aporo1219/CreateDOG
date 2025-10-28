@@ -141,6 +141,7 @@ private:
 
 	//最大体力
 	float MaxHealth = 100.0f;
+
 public:
 	// ジャンプ力
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dog|Movement")
@@ -150,6 +151,10 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "LockOn")
 	float LockOnRange = 1000.0f;
 
+	// 打った時のスコア	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Score")
+	int32 ShootScore = 10;
+
 	//ロックオンアクター
 	UPROPERTY(BlueprintReadOnly, Category = "LockOn")
 	AActor* LockedTarget = nullptr;
@@ -157,6 +162,7 @@ public:
 	//関数宣言
     float GetHealth() const { return Health; }
     float GetHealthMax() const { return MaxHealth; }
+
 
 	//ダメージ処理関数
 	UFUNCTION()
@@ -166,4 +172,24 @@ public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHealthChanged);
 	UPROPERTY(BlueprintAssignable, Category = "Event")
 	FOnHealthChanged OnHealthChanged;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnScoreChanged);
+	UPROPERTY(BlueprintAssignable, Category = "Event")
+	FOnScoreChanged OnScoreChanged;
+	//クラス宣言
+// 補助コリジョン用の Capsule
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collision")
+	class UCapsuleComponent* HeadCollision;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collision")
+	class UCapsuleComponent* FrontLeftLegCollision;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collision")
+	class UCapsuleComponent* FrontRightLegCollision;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collision")
+	class UCapsuleComponent* BackLeftLegCollision;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collision")
+	class UCapsuleComponent* BackRightLegCollision;
 };

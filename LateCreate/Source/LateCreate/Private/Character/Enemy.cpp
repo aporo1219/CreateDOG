@@ -6,6 +6,8 @@
 #include "Kismet/GameplayStatics.h"
 #include  "Character/EnemyBullet.h"
 #include "Character/Dog.h"
+#include "Actor/EnemySpawn.h"
+#include "TimerManager.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -83,9 +85,6 @@ void AEnemy::Tick(float DeltaTime)
 void AEnemy::Fire()
 {
 
-    // ログ確認
-    //UE_LOG(LogTemp, Warning, TEXT("Enemy Fire toward player!"));
-  //プレイヤーの取得
     ACharacter* DogChara = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     if (!DogChara)
     {
@@ -99,22 +98,18 @@ void AEnemy::Fire()
 
     if (!DogChara || !EnemyBulletClass)
         return;
-    
     //発射位置
     FVector SpawnLoc = MuzzlePoint->GetComponentLocation();
 
-    //プレイヤーの方向計算
-    FVector TargetLoc = DogChara->GetActorLocation();
-    //正規化
+    // プレイヤーの位置を補正（腰 or 胸のあたりに狙う）
+    FVector TargetLoc = DogChara->GetActorLocation() + FVector(0.f, 0.f, 50.f); // 高さ補正
+    // 発射方向を計算
     FVector Direction = (TargetLoc - SpawnLoc).GetSafeNormal();
-
-    //向きを回転変換
     FRotator SpawnRot = Direction.Rotation();
 
-    // ログ確認
-    //UE_LOG(LogTemp, Warning, TEXT("Enemy Fire toward player!"));
-
     //玉生成
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
     AEnemyBullet* Bullet = GetWorld()->SpawnActor<AEnemyBullet>(EnemyBulletClass, SpawnLoc, SpawnRot);
 
     //玉の初速を設定
@@ -131,4 +126,34 @@ void AEnemy::Fire()
     //攻撃のクールタイム
     float NextFire = FMath::FRandRange(BulletCoolTime1, BulletCoolTime2);
     GetWorldTimerManager().SetTimer(FireTimerHandle, this, &AEnemy::Fire, NextFire, false);
+}
+
+void AEnemy::TakeDamegeAndDie()
+{
+    // Fireタイマーを停止
+    GetWorldTimerManager().ClearAllTimersForObject(this);
+
+    // 敵を非表示＆衝突無効にする
+    SetActorHiddenInGame(true);
+    SetActorEnableCollision(false);
+    SetActorTickEnabled(false);
+
+    // EnemySpawn に通知
+    if (AEnemySpawn* Spawner = Cast<AEnemySpawn>(GetOwner()))
+    {
+        Spawner->OnEnemyKilled(this);
+    }
+}
+
+//リスポーン処理
+void AEnemy::Respawn()
+{
+    // 非表示を解除
+    SetActorHiddenInGame(false);
+    SetActorEnableCollision(true);
+    SetActorTickEnabled(true);
+
+    // Fireタイマーを再セット
+    float FirstFire = FMath::FRandRange(FirstBullet1, FirstBullet2);
+    GetWorldTimerManager().SetTimer(FireTimerHandle, this, &AEnemy::Fire, FirstFire, false);
 }
