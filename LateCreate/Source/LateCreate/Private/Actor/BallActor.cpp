@@ -102,11 +102,11 @@ void ABallActor::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 			{
 				GM->Score = 0;
 				//UIí ím
-				OnScoreChanged.Broadcast();
+				GM->OnScoreChanged.Broadcast();
 			}
 		}
 		//UIí ím
-		OnScoreChanged.Broadcast();
+		GM->OnScoreChanged.Broadcast();
 	}
 	
 	// íeé©êgÇ‡è¡Ç∑

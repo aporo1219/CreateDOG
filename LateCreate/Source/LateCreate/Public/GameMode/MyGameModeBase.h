@@ -41,7 +41,7 @@ protected:
 
 	void UpdateTime();
 
-	void AddScore(int32 Value);
+	void AddScore();
 
 	
 public:
@@ -54,7 +54,15 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Score")
 	int32 Score = 1000;
 
+	//ÉNÉâÉXêÈåæ
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnScoreChanged);
 	UPROPERTY(BlueprintAssignable, Category = "Event")
 	FOnScoreChanged OnScoreChanged;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<class UUserWidget> GameClearClass;
+
+private:
+	//ä÷êîêÈåæ
+	void GameClear();
 };

@@ -44,7 +44,7 @@ void UScore :: NativeConstruct()
 	}
 	if (AMyGameModeBase* GM = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld())))
 	{
-		// イベントにバインド
+		// イベントにバインドa
 		GM->OnScoreChanged.AddDynamic(this, &UScore::UpdateScoreText);
 
 		
@@ -110,7 +110,7 @@ FText UScore::SetTextScore()
 {
 	if (const AMyGameModeBase* GameMode = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld())))
 	{
-		// 制限時間の取得（変数に直接アクセス or Getter関数）
+		//スコアの取得（変数に直接アクセス or Getter関数）
 		return FText::FromString(FString::FromInt((float)GameMode->GetScore()));
 	}
 
@@ -137,9 +137,8 @@ void UScore::UpdateHealthText()
 //スコアUIの更新
 void UScore::UpdateScoreText()
 {
-	AMyGameModeBase* GM = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-	if (GM && TextScore)
+	if (const AMyGameModeBase* GM = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld())))
 	{
-		TextScore->SetText(FText::AsNumber(GM->Score));
+		TextScore->SetText(FText::AsNumber(GM->GetScore()));
 	}
 }

@@ -142,6 +142,11 @@ private:
 	//最大体力
 	float MaxHealth = 100.0f;
 
+	//関数宣言
+	//ゲームオーバー関数
+	void GameOver();
+
+
 public:
 	// ジャンプ力
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dog|Movement")
@@ -192,4 +197,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collision")
 	class UCapsuleComponent* BackRightLegCollision;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<class UUserWidget> GameOverClass; 
+
+
 };

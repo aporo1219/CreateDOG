@@ -14,6 +14,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameMode/MyGameModeBase.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values
 ADog::ADog()
@@ -85,10 +86,10 @@ ADog::ADog()
 		// 追加：メッシュで物理シミュレートがONになっていないことを保証
 		VisualMesh->SetSimulatePhysics(false);
 	}
-	else
+	/*else
 	{
 		UE_LOG(LogTemp, Error, TEXT("Failed to load StaticMesh: /Game/model/newdog.newdog"));
-	}
+	}*/
 	
 	// MaterialをStaticMeshに設定する
 	UCapsuleComponent* Capsule = GetCapsuleComponent();
@@ -165,7 +166,6 @@ void ADog::BeginPlay()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-			UE_LOG(LogTemp, Warning, TEXT("MappingContext added!"));
 		}
 	}
 
@@ -235,23 +235,24 @@ void ADog::Attack(const FInputActionValue& Value)
 {
 	if (IsChangeAttack)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("changeattack"));
 
 		AMyGameModeBase* GM = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 		if (GM)
 		{
 			GM->Score -= ShootScore;
+			
 			//スコアが0以下になったら0にする
 			if (GM->Score < 0)
 			{
 				GM->Score = 0;
 				//UI通知
-				OnScoreChanged.Broadcast();
+				GM->OnScoreChanged.Broadcast();
+				UE_LOG(LogTemp, Warning, TEXT("NoGM"));
 			}
 		}
 		//UI通知
-		OnScoreChanged.Broadcast();
-
+		GM->OnScoreChanged.Broadcast();
+		
 		// カメラ取得
 		APlayerController* PC = Cast<APlayerController>(GetController());
 		if (!PC) return;
@@ -276,15 +277,7 @@ void ADog::Attack(const FInputActionValue& Value)
 				// 発射方向を渡す
 				Ball->InitVelocity(ShootDir);
 				Ball->SetOwner(this);
-
-				UE_LOG(LogTemp, Warning, TEXT("Ball spawned! Dir: %s"), *ShootDir.ToString());
-				UE_LOG(LogTemp, Warning, TEXT("Ball spawned and InitVelocity called!"));
 			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("Ball spawn failed!"));
-			}
-
 			
 	}
 }
@@ -300,12 +293,10 @@ void ADog::LockOn(const FInputActionValue& Value)
 //ジャンプ操作の処理関数
 void ADog::Jump(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Jump"));
 	if (Value.Get<bool>())
 	{
 		//ジャンプ
 		ACharacter::Jump();
-		UE_LOG(LogTemp, Warning, TEXT("Jump triggered!"));
 	}
 }
 
@@ -314,7 +305,6 @@ void ADog::MoveToMousePoint(const FInputActionValue& Value)
 {
 	if (!IsChangeAttack)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("changewalk"));
 		APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
 		if (!PC)
 		{
@@ -331,7 +321,6 @@ void ADog::MoveToMousePoint(const FInputActionValue& Value)
 			//NavMesh上を移動
 			UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), TargetLocation);
 
-			UE_LOG(LogTemp, Warning, TEXT("Moving to: %s"), *TargetLocation.ToString());
 		}
 	}
 }
@@ -356,19 +345,76 @@ void ADog::TakeDamege(float DamegeAmount)
 {
 	Health -= DamegeAmount;
 	
-	//ゲームオーバー処理
 	if (Health < 0)
 	{
 		Health = 0;
-		
-
-		//UIへ通知
-		OnHealthChanged.Broadcast();
 	}
 
 	//UIへ通知
 	OnHealthChanged.Broadcast();
 
-	UE_LOG(LogTemp, Warning, TEXT("Dog HP: %f"), Health);
+	//ゲームオーバー処理
+	if (Health <= 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GAME OVER"));
+		GameOver();
+	}
+}
+
+//ゲームオーバー関数
+void ADog::GameOver()
+{
+	UE_LOG(LogTemp, Warning, TEXT("ShowGameOver() called"));
+
+	if (!GameOverClass)
+	{
+		UE_LOG(LogTemp, Error, TEXT("GameOverClass is null!"));
+		return;
+	}
+
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		UE_LOG(LogTemp, Error, TEXT("World is null!"));
+		return;
+	}
+
+	UUserWidget* GameOverUI = CreateWidget<UUserWidget>(World, GameOverClass);
+	if (GameOverUI)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GameOverUI created successfully!"));
+		GameOverUI->AddToViewport();
+
+		APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+		if (PC)
+		{
+			PC->bShowMouseCursor = true;
+			PC->SetInputMode(FInputModeGameAndUI());
+			PC->SetPause(true);
+		}
+	}
+
+
+	//入力の無効
+	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
+	{
+		PC->DisableInput(PC);
+	}
+
+
+	//ゲームオーバーUIを表示
+	TSubclassOf<UUserWidget> GameOverWidgetClass = LoadClass<UUserWidget>
+		(nullptr, TEXT("/Game/UI/GameOver_UI.GameOver_UI_C"));
+	if (GameOverWidgetClass)
+	{
+		UUserWidget* GameOverWidget = CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass);
+		if (GameOverWidget)
+		{
+			GameOverWidget->AddToViewport(10);
+		}
+	}
+
+	//ゲームの時間を止める
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
 }
 
