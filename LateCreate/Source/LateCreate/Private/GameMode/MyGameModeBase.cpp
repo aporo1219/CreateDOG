@@ -73,56 +73,50 @@ void AMyGameModeBase::AddScore()
 //ゲームクリア処理
 void AMyGameModeBase::GameClear()
 {
-	if (!GameClearClass)
-	{
-		UE_LOG(LogTemp, Error, TEXT("GameClearClass is null!"));
-		return;
-	}
+    // GameClearClass が設定されていなければロード
+    if (!GameClearClass)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("GameClearClass is null. Trying to load from asset..."));
+        GameClearClass = LoadClass<UUserWidget>(nullptr, TEXT("/Game/BP/UI/GameClear_UI.GameClear_UI_C"));
+    }
 
-	UWorld* World = GetWorld();
-	if (!World)
-	{
-		UE_LOG(LogTemp, Error, TEXT("World is null!"));
-		return;
-	}
+    //  それでもロードできない場合
+    if (!GameClearClass)
+    {
+        UE_LOG(LogTemp, Error, TEXT("Failed to load GameClear_UI!"));
+        return;
+    }
 
-	UUserWidget* GameClearUI = CreateWidget<UUserWidget>(World, GameClearClass);
-	if (GameClearUI)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("GameClearUI created successfully!"));
-		GameClearUI->AddToViewport();
+    //  ワールドを取得
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        UE_LOG(LogTemp, Error, TEXT("World is null!"));
+        return;
+    }
 
-		APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
-		if (PC)
-		{
-			PC->bShowMouseCursor = true;
-			PC->SetInputMode(FInputModeGameAndUI());
-			PC->SetPause(true);
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to create GameOverUI!"));
-	}
-	
-	//入力の無効
-	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
-	{
-		PC->DisableInput(PC);
-	}
+    //  UI作成
+    UUserWidget* GameClearUI = CreateWidget<UUserWidget>(World, GameClearClass);
+    if (!GameClearUI)
+    {
+        UE_LOG(LogTemp, Error, TEXT("Failed to create GameClearUI!"));
+        return;
+    }
 
+    // UI表示
+    UE_LOG(LogTemp, Warning, TEXT("GameClearUI created successfully!"));
+    GameClearUI->AddToViewport(999);
 
-	//ゲームクリアUIを表示
-	TSubclassOf<UUserWidget> GameClearWidgetClass = LoadClass<UUserWidget>
-		(nullptr, TEXT("/Game/UI/GameClear_UI.GameClear_UI_C"));
-	if (GameClearWidgetClass)
-	{
-		UUserWidget* GameClearWidget = CreateWidget<UUserWidget>(GetWorld(), GameClearWidgetClass);
-		if (GameClearWidget)
-		{
-			GameClearWidget->AddToViewport(10);
-		}
-	}
-	//ゲームの時間を止める
-	UGameplayStatics::SetGamePaused(GetWorld(), true);
+    GameClearUI->SetVisibility(ESlateVisibility::Visible);
+    //  プレイヤー操作無効＋マウスカーソル表示
+    APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+    if (PC)
+    {
+        PC->bShowMouseCursor = true;
+        PC->SetInputMode(FInputModeGameAndUI());
+        PC->DisableInput(PC);
+    }
+
+    //  ゲーム停止
+    UGameplayStatics::SetGamePaused(World, true);
 }

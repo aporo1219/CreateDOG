@@ -64,5 +64,6 @@ public:
 
 private:
 	//ŠÖ”éŒ¾
+	UFUNCTION(BlueprintCallable, Category = "UI")
 	void GameClear();
 };
