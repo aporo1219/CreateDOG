@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Character/EnemyBullet.h"
+#include "Sound/SoundBase.h"
 #include "Enemy.generated.h"
 
 UCLASS()
@@ -53,6 +54,9 @@ public:
 	float FirstBullet2 = 4.0f;
 	float BulletCoolTime1 = 5.0f;
 	float BulletCoolTime2 = 10.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundBase* SoundToPlayHit;
 
 	//ä÷êîêÈåæ
 	void TakeDamegeAndDie();

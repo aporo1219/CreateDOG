@@ -3,6 +3,7 @@
 
 #include "UI/StageSelectUI.h"
 #include "Components/Button.h"
+#include "Components/Image.h"
 #include "Kismet/GameplayStatics.h"
 
 void UStageSelectUI::NativeConstruct()
@@ -12,11 +13,6 @@ void UStageSelectUI::NativeConstruct()
 	//ボタンをまとめる
 	StageButtons = { Stage1Button,Stage2Button,Stage3Button,Stage4Button };
 
-	// 画像リストに追加
-	StageImages = { Stage1Image, Stage2Image, Stage3Image, Stage4Image };
-
-	// テキストリストに追加
-	StageTexts = { Stage1Text, Stage2Text, Stage3Text, Stage4Text };
 
 	//ステージ名の設定
 	StageNames = { "stage1","Stage2","Stage3","Stage4" };
@@ -36,6 +32,7 @@ void UStageSelectUI::NativeConstruct()
 void UStageSelectUI::OnStage1Clicked()
 {
 	OpenStageIndex(0);
+	
 }
 
 void UStageSelectUI::OnStage2Clicked()
@@ -55,8 +52,43 @@ void UStageSelectUI::OnStage4Clicked()
 
 void UStageSelectUI::OpenStageIndex(int32 Index)
 {
+	if (SoundToPlayPushButton)
+	{
+		UGameplayStatics::PlaySound2D(this, SoundToPlayPushButton);
+		UE_LOG(LogTemp, Warning, TEXT("SE play"));
+	}
 	if (StageNames.IsValidIndex(Index))
 	{
+		
+		//一時保存
+		PendingStageName = StageNames[Index];
+
+		if (FadeOutAnim)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("FadeOutAnim play"));
+			//フェード再生
+			PlayAnimation(FadeOutAnim);
+
+			//アニメ終了時に呼ばれる処理を登録
+			FWidgetAnimationDynamicEvent EndEvent;
+			EndEvent.BindDynamic(this, &UStageSelectUI::OnFadeOutFinished);
+			BindToAnimationFinished(FadeOutAnim, EndEvent);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("FadeOutAnim が NULL"));
+			//即ロード
+			UGameplayStatics::OpenLevel(GetWorld(), FName(PendingStageName));
+		}
+		
 		UGameplayStatics::OpenLevel(GetWorld(), StageNames[Index]);
+	}
+}
+
+void UStageSelectUI::OnFadeOutFinished()
+{
+	if (!PendingStageName.IsNone())
+	{
+		UGameplayStatics::OpenLevel(GetWorld(), FName(PendingStageName));
 	}
 }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Sound/SoundBase.h"
 #include "StageSelectUI.generated.h"
 
 /**
@@ -28,30 +29,13 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* Stage4Button;
 
-	//画像とバインドクラス
-	UPROPERTY(meta = (BindWidget))
-	class UImage* Stage1Image;
-	UPROPERTY(meta = (BindWidget))
-	class UImage* Stage2Image;
-	UPROPERTY(meta = (BindWidget))
-	class UImage* Stage3Image;
-	UPROPERTY(meta = (BindWidget))
-	class UImage* Stage4Image;
-
-	//テキストとバインドクラス
-	UPROPERTY(meta = (BindWidget))
-	class UText* Stage1Text;
-	UPROPERTY(meta = (BindWidget))
-	class UText* Stage2Text;
-	UPROPERTY(meta = (BindWidget))
-	class UText* Stage3Text; 
-	UPROPERTY(meta = (BindWidget))
-	class UText* Stage4Text;
+	//フェードアウトのバインド宣言
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	UWidgetAnimation* FadeOutAnim;
+	
 
 	//リスト格納用
 	TArray<UButton*> StageButtons;
-	TArray<UImage*> StageImages;
-	TArray<UText*> StageTexts;
 
 	//ステージ名の配列
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "stage")
@@ -72,4 +56,16 @@ private:
 	void OnStage4Clicked();
 
 	void OpenStageIndex(int32 Index);
+
+	//フェードアウト処理関数
+	UFUNCTION()
+	void OnFadeOutFinished();
+
+	//遷移予定のステージを一時保存
+	FName PendingStageName;
+
+private:
+	//変数宣言
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundBase* SoundToPlayPushButton;
 };

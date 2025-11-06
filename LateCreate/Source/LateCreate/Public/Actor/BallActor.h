@@ -43,6 +43,7 @@ private:
 	float I_Speed = 3000.0f;
 	float Max_Speed = 3000.0f;
 
+
 public:
 	float HitScore = 100.0f;
 

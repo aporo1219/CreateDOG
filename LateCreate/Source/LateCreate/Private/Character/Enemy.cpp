@@ -130,6 +130,12 @@ void AEnemy::Fire()
 
 void AEnemy::TakeDamegeAndDie()
 {
+    //被弾SE
+    if (SoundToPlayHit)
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, SoundToPlayHit, GetActorLocation());
+    }
+
     // Fireタイマーを停止
     GetWorldTimerManager().ClearAllTimersForObject(this);
 

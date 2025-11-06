@@ -185,6 +185,12 @@ void ADog::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//地面についたらJumpSECheckをfalseにする
+    if (GetCharacterMovement()->IsMovingOnGround())
+	{
+		JumpSECheck = false;
+	}
+
 }
 
 // Called to bind functionality to input
@@ -273,10 +279,14 @@ void ADog::Attack(const FInputActionValue& Value)
 
 			if (Ball)
 			{
-
 				// 発射方向を渡す
 				Ball->InitVelocity(ShootDir);
 				Ball->SetOwner(this);
+				//発射SE
+				if (SoundToPlayShot)
+				{
+					UGameplayStatics::PlaySoundAtLocation(this, SoundToPlayShot, GetActorLocation());
+				}
 			}
 			
 	}
@@ -297,7 +307,16 @@ void ADog::Jump(const FInputActionValue& Value)
 	{
 		//ジャンプ
 		ACharacter::Jump();
+
+		//ジャンプSE
+		if (SoundToPlayJump && !JumpSECheck)
+		{
+
+			UGameplayStatics::PlaySoundAtLocation(this, SoundToPlayJump, GetActorLocation());
+			JumpSECheck = true;
+		}
 	}
+	
 }
 
 //クリックしたら動かす関数
@@ -331,12 +350,20 @@ void ADog::Switch(const FInputActionValue& Value)
 	if (!IsChangeAttack)
 	{
 		IsChangeAttack = true;
-		
+		//切り替えSE
+		if (SoundToPlayChenge)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, SoundToPlayChenge, GetActorLocation());
+		}
 	}
 	else
 	{
 		IsChangeAttack = false;
-		
+		//切り替えSE
+		if (SoundToPlayChenge)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, SoundToPlayChenge, GetActorLocation());
+		}
 	}
 }
 
@@ -345,6 +372,12 @@ void ADog::TakeDamege(float DamegeAmount)
 {
 	Health -= DamegeAmount;
 	
+	//被弾SE
+	if (SoundToPlayHitByEnemy)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, SoundToPlayHitByEnemy, GetActorLocation());
+	}
+
 	if (Health < 0)
 	{
 		Health = 0;

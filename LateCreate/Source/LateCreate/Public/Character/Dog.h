@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "InputActionValue.h"
 #include "GameFramework/Character.h"
+#include "Sound/SoundBase.h"
 #include "Dog.generated.h"
 
 
@@ -142,10 +143,24 @@ private:
 	//最大体力
 	float MaxHealth = 100.0f;
 
+	//ジャンプSE制御変数
+	float JumpSECheck = false;
+
 	//関数宣言
 	//ゲームオーバー関数
 	void GameOver();
 
+	UPROPERTY(EditAnywhere,Category = "Sound")
+	USoundBase* SoundToPlayJump;
+
+	UPROPERTY(EditAnywhere,Category = "Sound")
+	USoundBase* SoundToPlayShot;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundBase* SoundToPlayChenge;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundBase* SoundToPlayHitByEnemy;
 
 public:
 	// ジャンプ力
