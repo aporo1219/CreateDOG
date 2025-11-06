@@ -39,6 +39,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly,Category = "UI")
 	TSubclassOf<UScore> UScoreClass;
 
+	
+
 	void UpdateTime();
 
 	void AddScore();

@@ -7,6 +7,7 @@
 #include "Actor/BallActor.h"
 #include "Framework/InGameHUD.h"
 #include "UI/Score.h"
+#include "UI/StageSelectUI.h"
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 
