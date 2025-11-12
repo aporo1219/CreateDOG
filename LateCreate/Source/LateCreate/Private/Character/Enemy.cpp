@@ -34,7 +34,6 @@ AEnemy::AEnemy()
         EnemyBulletClass = BulletBP.Class;
     }
 
-    Tags.Add(FName("Enemy"));
 }
 
 // Called when the game starts or when spawned
