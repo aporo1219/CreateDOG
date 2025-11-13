@@ -32,5 +32,5 @@ void UUserWidget_GameClear::OnStageSelectCliked()
 {
 	// ƒ|[ƒY‰ðœ
 	UGameplayStatics::SetGamePaused(GetWorld(), false);
-	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()));
+	UGameplayStatics::OpenLevel(GetWorld(),TEXT( "StageSelect"));
 }

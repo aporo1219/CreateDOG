@@ -35,6 +35,9 @@ public:
 	//玉の発射位置
 	UPROPERTY(VisibleAnywhere,Category = "Attack")
 	USceneComponent* MuzzlePoint;
+	// ルートコンポーネント
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy", meta = (AllowPrivateAccess = "true"))
+	USceneComponent* Root;
 
 	//発射するクラス
 	UPROPERTY(EditAnywhere, Category = "Attack")
@@ -42,6 +45,9 @@ public:
 
 	//玉の発射関数
 	void Fire();
+
+	//敵の移動関数
+	void EnemyMove();
 
 	UFUNCTION()
 	void InitializeEnemy();
@@ -62,4 +68,8 @@ public:
 	void TakeDamegeAndDie();
 
 	void Respawn();
+
+private:
+	//変数宣言
+	float EnemyTurnAngle = 270.0f;
 };

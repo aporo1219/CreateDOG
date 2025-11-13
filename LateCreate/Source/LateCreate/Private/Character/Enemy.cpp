@@ -14,19 +14,27 @@ AEnemy::AEnemy()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+    PrimaryActorTick.bStartWithTickEnabled = true;
    
+
     EnemyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BodyMesh"));
     RootComponent = EnemyMesh;
 
     EnemyMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-    EnemyMesh->SetCollisionProfileName(TEXT("BlockAllDynamic")); // または "BlockAllDynamic"
+    EnemyMesh->SetCollisionProfileName(TEXT("BlockAllDynamic")); 
+    EnemyMesh->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
+    EnemyMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+
+    EnemyMesh->SetSimulatePhysics(false);
+    EnemyMesh->SetEnableGravity(false);
+
 
     MuzzlePoint = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzlePoint"));
     MuzzlePoint->SetupAttachment(EnemyMesh);
     MuzzlePoint->SetRelativeLocation(FVector(100.f, 0.f, 0.f)); // 前方
 
     FloatingMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("FloatingMovement"));
+    FloatingMovement->UpdatedComponent = RootComponent;
 
     static ConstructorHelpers::FClassFinder<AEnemyBullet> BulletBP(TEXT("/Game/BP/Enemy/BP_EnemyBullet"));
     if (BulletBP.Succeeded())
@@ -43,8 +51,8 @@ void AEnemy::BeginPlay()
 
     // 0.5秒後に初期化処理を実行
     GetWorldTimerManager().SetTimerForNextTick(this, &AEnemy::InitializeEnemy);
-	
-    
+    SetActorTickEnabled(true);
+  
 }
 
 
@@ -74,8 +82,39 @@ void AEnemy::InitializeEnemy()
 // Called every frame
 void AEnemy::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
+    Super::Tick(DeltaTime);
 
+   
+
+    //プレイヤーの取得
+    ACharacter* DogChara = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+    if (!DogChara)
+    {
+        return;
+    }
+
+    //敵自身とプレイヤーの位置取得
+    FVector PlayerLoc = DogChara->GetActorLocation();
+    FVector EnemyLoc = GetActorLocation();
+
+    //向きの計算
+    FVector ToPlayer = PlayerLoc - EnemyLoc;
+
+    //角度の変換
+    FRotator LookRot = ToPlayer.Rotation();
+    LookRot.Yaw += EnemyTurnAngle;
+
+    //敵の回転
+    SetActorRotation(LookRot);
+
+    //再生されているレベルの取得
+    FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld(), true);
+
+    //レベルによっての敵の動きの処理
+    if (LevelName == "Stage2")
+    {
+        EnemyMove();
+    }
 }
 
 // Called to bind functionality to input
@@ -161,4 +200,20 @@ void AEnemy::Respawn()
     // Fireタイマーを再セット
     float FirstFire = FMath::FRandRange(FirstBullet1, FirstBullet2);
     GetWorldTimerManager().SetTimer(FireTimerHandle, this, &AEnemy::Fire, FirstFire, false);
+}
+
+//敵の動き処理
+void AEnemy::EnemyMove()
+{
+    FHitResult Hit;
+    float Speed = 200.0f;
+    FVector NewLoc = GetActorLocation() + GetActorForwardVector() * Speed * GetWorld()->GetDeltaSeconds();
+    SetActorLocation( NewLoc,true);
+
+    ////壁にぶつかったらの処理
+    //if (IsHit)
+    //{
+    //    FVector SlideWall = FVector::VectorPlaneProject(NewLoc, Hit.Normal);
+    //    SetActorLocation(GetActorLocation() + SlideWall, true);
+    //}
 }

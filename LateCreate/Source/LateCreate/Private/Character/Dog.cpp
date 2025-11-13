@@ -28,39 +28,39 @@ ADog::ADog()
 	RootComponent = GetCapsuleComponent();
 
 
-	HeadCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HeadCollision"));
-	HeadCollision->SetupAttachment(GetMesh(), FName("head")); // headボーンにアタッチ
-	HeadCollision->SetCapsuleSize(12.f, 15.f);
-	HeadCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
-	HeadCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	//HeadCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HeadCollision"));
+	//HeadCollision->SetupAttachment(GetMesh(), FName("head")); // headボーンにアタッチ
+	//HeadCollision->SetCapsuleSize(12.f, 15.f);
+	//HeadCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
+	//HeadCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	// --- 前足（左） ---
-	FrontLeftLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("FrontLeftLegCollision"));
-	FrontLeftLegCollision->SetupAttachment(GetMesh(), FName("front_left_leg"));
-	FrontLeftLegCollision->SetCapsuleSize(6.f, 12.f);
-	FrontLeftLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
-	FrontLeftLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	//// --- 前足（左） ---
+	//FrontLeftLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("FrontLeftLegCollision"));
+	//FrontLeftLegCollision->SetupAttachment(GetMesh(), FName("front_left_leg"));
+	//FrontLeftLegCollision->SetCapsuleSize(6.f, 12.f);
+	//FrontLeftLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
+	//FrontLeftLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	// --- 前足（右） ---
-	FrontRightLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("FrontRightLegCollision"));
-	FrontRightLegCollision->SetupAttachment(GetMesh(), FName("front_right_leg"));
-	FrontRightLegCollision->SetCapsuleSize(6.f, 12.f);
-	FrontRightLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
-	FrontRightLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	//// --- 前足（右） ---
+	//FrontRightLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("FrontRightLegCollision"));
+	//FrontRightLegCollision->SetupAttachment(GetMesh(), FName("front_right_leg"));
+	//FrontRightLegCollision->SetCapsuleSize(6.f, 12.f);
+	//FrontRightLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
+	//FrontRightLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	// --- 後足（左） ---
-	BackLeftLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("BackLeftLegCollision"));
-	BackLeftLegCollision->SetupAttachment(GetMesh(), FName("back_left_leg"));
-	BackLeftLegCollision->SetCapsuleSize(6.f, 12.f);
-	BackLeftLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
-	BackLeftLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	//// --- 後足（左） ---
+	//BackLeftLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("BackLeftLegCollision"));
+	//BackLeftLegCollision->SetupAttachment(GetMesh(), FName("back_left_leg"));
+	//BackLeftLegCollision->SetCapsuleSize(6.f, 12.f);
+	//BackLeftLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
+	//BackLeftLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	// --- 後足（右） ---
-	BackRightLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("BackRightLegCollision"));
-	BackRightLegCollision->SetupAttachment(GetMesh(), FName("back_right_leg"));
-	BackRightLegCollision->SetCapsuleSize(6.f, 12.f);
-	BackRightLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
-	BackRightLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	//// --- 後足（右） ---
+	//BackRightLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("BackRightLegCollision"));
+	//BackRightLegCollision->SetupAttachment(GetMesh(), FName("back_right_leg"));
+	//BackRightLegCollision->SetCapsuleSize(6.f, 12.f);
+	//BackRightLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
+	//BackRightLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	// 仮の見た目（エンジン内のSphereを使う）
 	USkeletalMeshComponent* CharacterMesh = GetMesh();
 
