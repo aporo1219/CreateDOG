@@ -137,7 +137,7 @@ void AEnemy::Fire()
     if (!DogChara || !EnemyBulletClass)
         return;
     //発射位置
-    FVector SpawnLoc = MuzzlePoint->GetComponentLocation();
+    FVector SpawnLoc = MuzzlePoint->GetComponentLocation() + GetActorForwardVector() * 100.f;
 
     // プレイヤーの位置を補正（腰 or 胸のあたりに狙う）
     FVector TargetLoc = DogChara->GetActorLocation() + FVector(0.f, 0.f, 50.f); // 高さ補正
@@ -205,15 +205,21 @@ void AEnemy::Respawn()
 //敵の動き処理
 void AEnemy::EnemyMove()
 {
-    FHitResult Hit;
-    float Speed = 200.0f;
-    FVector NewLoc = GetActorLocation() + GetActorForwardVector() * Speed * GetWorld()->GetDeltaSeconds();
-    SetActorLocation( NewLoc,true);
+    if (!FloatingMovement)
+        return;
 
-    ////壁にぶつかったらの処理
-    //if (IsHit)
-    //{
-    //    FVector SlideWall = FVector::VectorPlaneProject(NewLoc, Hit.Normal);
-    //    SetActorLocation(GetActorLocation() + SlideWall, true);
-    //}
+    float Speed = 200.f;
+    FVector CurrentLoc = GetActorLocation();
+    FVector MoveDelta = GetActorForwardVector() * Speed * GetWorld()->GetDeltaSeconds();
+
+    // 衝突判定用
+    FHitResult Hit;
+    SetActorLocation(CurrentLoc + MoveDelta, true, &Hit);
+
+    // 壁にぶつかったらスライド
+    if (Hit.bBlockingHit)
+    {
+        FVector SlideDelta = FVector::VectorPlaneProject(MoveDelta, Hit.Normal);
+        SetActorLocation(CurrentLoc + SlideDelta, true);
+    }
 }

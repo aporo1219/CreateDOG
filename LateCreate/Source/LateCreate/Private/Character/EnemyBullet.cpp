@@ -97,7 +97,7 @@ void AEnemyBullet::OnHit(UPrimitiveComponent* OverlappedComp,
 	UE_LOG(LogTemp, Warning, TEXT("AEnemyBullet::OnHit called with %s"), *OtherActor->GetName());
 	
 	//null‚©‚ÌŠm”F
-	if (!OtherActor || OtherActor == this)
+	if (!OtherActor || OtherActor == this || OtherActor == GetOwner())
 		return;
 
 	// ‚±‚±‚ÉƒƒO‚ğ“ü‚ê‚é
@@ -106,7 +106,6 @@ void AEnemyBullet::OnHit(UPrimitiveComponent* OverlappedComp,
 	ADog* Dog = Cast<ADog>(OtherActor);
 	if (Dog)
 	{
-		
 		Dog->TakeDamege(Damege);
 	}
 
