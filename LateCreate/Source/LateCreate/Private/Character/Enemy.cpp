@@ -8,6 +8,9 @@
 #include "Character/Dog.h"
 #include "Actor/EnemySpawn.h"
 #include "TimerManager.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "UObject/ConstructorHelpers.h"
+
 
 // Sets default values
 AEnemy::AEnemy()
@@ -17,7 +20,7 @@ AEnemy::AEnemy()
     PrimaryActorTick.bStartWithTickEnabled = true;
    
 
-    EnemyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BodyMesh"));
+    EnemyMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("EnemyMesh"));
     RootComponent = EnemyMesh;
 
     EnemyMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -27,6 +30,19 @@ AEnemy::AEnemy()
 
     EnemyMesh->SetSimulatePhysics(false);
     EnemyMesh->SetEnableGravity(false);
+
+    // Skeletal Mesh‚ðC++‚ÅƒZƒbƒg
+    static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/model/Alien/Alien"));
+    if (MeshAsset.Succeeded())
+    {
+       EnemyMesh->SetSkeletalMesh(MeshAsset.Object);
+       UE_LOG(LogTemp, Warning, TEXT("Mesh successfully loaded!"));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Failed to load mesh! Check path."));
+    
+    }
 
 
     MuzzlePoint = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzlePoint"));

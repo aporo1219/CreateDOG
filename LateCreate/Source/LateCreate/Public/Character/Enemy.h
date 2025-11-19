@@ -27,8 +27,9 @@ public:
 
 public:
 	//ƒ‚ƒfƒ‹
-	UPROPERTY(VisibleAnywhere,Category = "Components")
-	UStaticMeshComponent* EnemyMesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USkeletalMeshComponent* EnemyMesh;
+
 	//ˆÚ“®
 	UPROPERTY(VisibleAnywhere,Category = "Movement")
 	class UFloatingPawnMovement* FloatingMovement;
