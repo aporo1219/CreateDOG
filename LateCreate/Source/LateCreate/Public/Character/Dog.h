@@ -6,8 +6,8 @@
 #include "InputActionValue.h"
 #include "GameFramework/Character.h"
 #include "Sound/SoundBase.h"
+#include <Components/SpotLightComponent.h>
 #include "Dog.generated.h"
-
 
 //クラスの宣言
 class UStaticMeshCOmponent;
@@ -50,6 +50,8 @@ private:
 	//カメラ
 	UPROPERTY(VisibleAnywhere, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> Camera;
+
+	
 
 	//スプリングアームの角度変数
 	float RollArm = 0.0f, PitchArm = -30.0f, YawArm = 0.0f;
@@ -101,6 +103,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
+	//スポットライトをコンポーネント
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Light")
+	USpotLightComponent* SpotLight;
 private:
 	//弾丸のクラス
 	UPROPERTY(EditDefaultsOnly,Category = "Attack")
@@ -145,6 +150,10 @@ private:
 
 	//ジャンプSE制御変数
 	float JumpSECheck = false;
+
+	//ライトの位置補正
+	const FVector SpotLightPos = { 0.f,0.f,200.0f };
+	const FRotator SpotLightRot = { -75.0f,0.f,0.f };
 
 	//関数宣言
 	//ゲームオーバー関数

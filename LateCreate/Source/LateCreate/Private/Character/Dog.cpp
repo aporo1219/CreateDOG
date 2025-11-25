@@ -25,7 +25,7 @@ ADog::ADog()
 	// ACharacterにはデフォルトでCapsuleComponentがRoot
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.f);
 
-	RootComponent = GetCapsuleComponent();
+	//RootComponent = GetCapsuleComponent();
 
 
 	//HeadCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HeadCollision"));
@@ -64,7 +64,7 @@ ADog::ADog()
 	// 仮の見た目（エンジン内のSphereを使う）
 	USkeletalMeshComponent* CharacterMesh = GetMesh();
 
-	//Mesh
+	//Mesh---------------------------------------------------
 	UStaticMesh* DogMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/model/newdog.newdog"));
 	if (DogMesh)
 	{
@@ -104,6 +104,7 @@ ADog::ADog()
 
 	Capsule->SetGenerateOverlapEvents(true);
 
+	//スプリングアーム--------------------------------------------------------
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
 
@@ -119,6 +120,7 @@ ADog::ADog()
 	SpringArm->bEnableCameraLag = true;
 	SpringArm->CameraLagSpeed = 5.0f;
 
+	//カメラ--------------------------------------------------------------------
 	// カメラのセットアップ
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
@@ -126,6 +128,7 @@ ADog::ADog()
 	// カメラはPawnの回転を使わない（固定後方視点）
 	Camera->bUsePawnControlRotation = false;
 
+	//入力----------------------------------------------------------------------
     //InputMappingの読み込み
 	DefaultMappingContext = LoadObject<UInputMappingContext>(nullptr, TEXT("/Game/input/InputMappingContext1"));
 
@@ -154,6 +157,17 @@ ADog::ADog()
 
 	// CharacterMovementComponent にジャンプ力を設定
 	GetCharacterMovement()->JumpZVelocity = JumpForce;
+
+	//スポットライト--------------------------------------------------------------------
+	SpotLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLight"));
+	SpotLight->SetupAttachment(RootComponent);//capsuleに追従
+	SpotLight->SetRelativeLocation(SpotLightPos);
+	SpotLight->SetRelativeRotation(SpotLightRot);
+	SpotLight->Intensity = 5.0f;//強度
+	SpotLight->AttenuationRadius = 100.0f;
+	SpotLight->InnerConeAngle = 50.0f;//内側の角度
+	SpotLight->OuterConeAngle = 25.0f;//外側の角度
+
 }
 
 // Called when the game starts or when spawned
