@@ -3,6 +3,7 @@
 
 #include "BGM/MyBGM.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 AMyBGM::AMyBGM()
@@ -20,12 +21,12 @@ void AMyBGM::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	FString StageName = UGameplayStatics::GetCurrentLevelName(GetWorld(), true);
 	UE_LOG(LogTemp, Warning, TEXT("BGM play"));
-	if (stage1BGM)
+	if (BGMComponet && BGMBase)
 	{
-		BGMComponet->SetSound(stage1BGM);
-		SetBGM();
-		
+		BGMComponet->SetSound(BGMBase);
+		BGMComponet->Play();
 	}
 	
 }

@@ -104,7 +104,7 @@ public:
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
 	//スポットライトをコンポーネント
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Light")
+	UPROPERTY(VisibleAnywhere, Category = "Light")
 	USpotLightComponent* SpotLight;
 private:
 	//弾丸のクラス
@@ -151,6 +151,8 @@ private:
 	//ジャンプSE制御変数
 	float JumpSECheck = false;
 
+	//ステージの取得
+	FString StageName;
 	//ライトの位置補正
 	const FVector SpotLightPos = { 0.f,0.f,200.0f };
 	const FRotator SpotLightRot = { -75.0f,0.f,0.f };

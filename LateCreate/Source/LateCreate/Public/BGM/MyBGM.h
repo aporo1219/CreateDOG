@@ -26,9 +26,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintREadOnly, Category = Audio)
 	UAudioComponent* BGMComponet;
 
-	//SoundCue‚ğ‘z’è
+	//SoundBase‚ğ‘z’è
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Audio)
-	USoundCue* stage1BGM;
+	USoundBase* BGMBase;
 
 
 public:	
@@ -40,4 +40,7 @@ public:
 	//BGM‚ğ’â~‚·‚éŠÖ”
 	UFUNCTION(BlueprintCallable,Category = Audio)
 	void StopBGM();
+
+private:
+	const int BGMNum = 3;
 };

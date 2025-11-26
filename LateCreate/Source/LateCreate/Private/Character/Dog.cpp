@@ -25,7 +25,7 @@ ADog::ADog()
 	// ACharacterにはデフォルトでCapsuleComponentがRoot
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.f);
 
-	//RootComponent = GetCapsuleComponent();
+	RootComponent = GetCapsuleComponent();
 
 
 	//HeadCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HeadCollision"));
@@ -47,7 +47,7 @@ ADog::ADog()
 	//FrontRightLegCollision->SetCapsuleSize(6.f, 12.f);
 	//FrontRightLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 	//FrontRightLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-
+	
 	//// --- 後足（左） ---
 	//BackLeftLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("BackLeftLegCollision"));
 	//BackLeftLegCollision->SetupAttachment(GetMesh(), FName("back_left_leg"));
@@ -163,11 +163,12 @@ ADog::ADog()
 	SpotLight->SetupAttachment(RootComponent);//capsuleに追従
 	SpotLight->SetRelativeLocation(SpotLightPos);
 	SpotLight->SetRelativeRotation(SpotLightRot);
-	SpotLight->Intensity = 5.0f;//強度
-	SpotLight->AttenuationRadius = 100.0f;
-	SpotLight->InnerConeAngle = 50.0f;//内側の角度
-	SpotLight->OuterConeAngle = 25.0f;//外側の角度
-
+	SpotLight->Intensity = 5000.0f;//強度
+	SpotLight->AttenuationRadius = 800.0f;
+	SpotLight->InnerConeAngle = 25.0f;//内側の角度
+	SpotLight->OuterConeAngle = 50.0f;//外側の角度
+	SpotLight->SetMobility(EComponentMobility::Movable);
+	SpotLight->SetVisibility(true);
 }
 
 // Called when the game starts or when spawned
@@ -205,6 +206,8 @@ void ADog::Tick(float DeltaTime)
 		JumpSECheck = false;
 	}
 
+	//再生されていlevelの取得
+	StageName = UGameplayStatics::GetCurrentLevelName(GetWorld(), true);
 }
 
 // Called to bind functionality to input
@@ -246,7 +249,7 @@ void ADog::Look(const FInputActionValue& Value)
 		FRotator controlRotate = GetControlRotation();
 
 		// PlayerControllerの角度を設定する
-		UGameplayStatics::GetPlayerController(this, 0)->SetControlRotation(FRotator(controlRotate.Pitch,controlRotate.Yaw,0.0f));
+		UGameplayStatics::GetPlayerController(this, 0)->SetControlRotation(FRotator(-controlRotate.Pitch,controlRotate.Yaw,0.0f));
 	}
 }
 
