@@ -15,6 +15,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameMode/MyGameModeBase.h"
 #include "Blueprint/UserWidget.h"
+#include "BGM/MyBGM.h"
 
 // Sets default values
 ADog::ADog()
@@ -248,8 +249,19 @@ void ADog::Look(const FInputActionValue& Value)
 		//Dogが持っているControlの角度を取得
 		FRotator controlRotate = GetControlRotation();
 
-		// PlayerControllerの角度を設定する
-		UGameplayStatics::GetPlayerController(this, 0)->SetControlRotation(FRotator(-controlRotate.Pitch,controlRotate.Yaw,0.0f));
+		//再生されているレベルの取得
+		FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld(), true);
+
+		if (LevelName == "stage1" || LevelName == "stage2" || LevelName == "stage3")
+		{
+			// PlayerControllerの角度を設定する
+			UGameplayStatics::GetPlayerController(this, 0)->SetControlRotation(FRotator(-controlRotate.Pitch, controlRotate.Yaw, 0.0f));
+		}
+		else
+		{
+			// PlayerControllerの角度を設定する
+			UGameplayStatics::GetPlayerController(this, 0)->SetControlRotation(FRotator(controlRotate.Pitch, controlRotate.Yaw, 0.0f));
+		}
 	}
 }
 
@@ -462,6 +474,18 @@ void ADog::GameOver()
 		{
 			GameOverWidget->AddToViewport(10);
 		}
+	}
+
+	//BGM再生
+	AMyBGM* bgmActor = Cast<AMyBGM>(UGameplayStatics::GetActorOfClass(GetWorld(), AMyBGM::StaticClass()));
+
+	if (bgmActor)
+	{
+		bgmActor->PlayOverBGM();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AMyBGM Not Found in level!"));
 	}
 
 	//ゲームの時間を止める

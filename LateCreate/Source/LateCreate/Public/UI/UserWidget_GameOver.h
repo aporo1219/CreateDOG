@@ -21,7 +21,14 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* RestartButton;
 
+	UPROPERTY(meta = (BindWidget))
+	class UButton* StageSelectButton;
+
 	//リスタートボタンが押されたとき
 	UFUNCTION()
 	void OnRestartCliked();
+
+	//ステージセレクトボタンが押されたとき
+	UFUNCTION()
+	void OnStageSelectCliked();
 };

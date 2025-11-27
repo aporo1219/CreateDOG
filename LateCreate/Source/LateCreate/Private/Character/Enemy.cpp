@@ -127,7 +127,7 @@ void AEnemy::Tick(float DeltaTime)
     FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld(), true);
 
     //ƒŒƒxƒ‹‚É‚æ‚Á‚Ä‚Ì“G‚Ì“®‚«‚Ìˆ—
-    if (LevelName == "Stage2" || LevelName == "Stage3")
+    if (LevelName == "Stage2" || LevelName == "Stage3"|| LevelName == "Stage4")
     {
         EnemyMove();
     }

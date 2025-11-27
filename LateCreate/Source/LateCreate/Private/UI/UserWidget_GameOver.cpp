@@ -21,6 +21,16 @@ bool UUserWidget_GameOver::Initialize()
 	{
 		UE_LOG(LogTemp, Error, TEXT("RestartButton is NULL!"));
 	}
+
+	if (StageSelectButton)
+	{
+		StageSelectButton->OnClicked.AddDynamic(this, &UUserWidget_GameOver::OnStageSelectCliked);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("StageSelectButton is NULL!"));
+	}
+
 	return true;
 }
 
@@ -33,4 +43,14 @@ void UUserWidget_GameOver::OnRestartCliked()
 	// ポーズ解除
 	UGameplayStatics::SetGamePaused(GetWorld(), false);
 	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()));
+}
+
+//ゲームセレクトの処理
+void UUserWidget_GameOver::OnStageSelectCliked()
+{
+	UE_LOG(LogTemp, Warning, TEXT("StageSelect Button Clicked!"));
+
+	//ポーズ解除
+	UGameplayStatics::SetGamePaused(GetWorld(), false);
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("StageSelect"));
 }

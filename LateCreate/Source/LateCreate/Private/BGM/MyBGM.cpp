@@ -23,31 +23,57 @@ void AMyBGM::BeginPlay()
 	
 	FString StageName = UGameplayStatics::GetCurrentLevelName(GetWorld(), true);
 	UE_LOG(LogTemp, Warning, TEXT("BGM play"));
-	if (BGMComponet && BGMBase)
+	int BGMIndex = -1;
+
+	if (StageName == "stageselect")
 	{
-		BGMComponet->SetSound(BGMBase);
+		BGMIndex = 0;
+	}
+	else if (StageName == "stage1" || StageName == "stage2" )
+	{
+		BGMIndex = 1;
+	}
+	else if (StageName == "stage3" || StageName == "stage4")
+	{
+		BGMIndex = 2;
+	}
+
+	//BGM再生
+	if (BGMs.IsValidIndex(BGMIndex) && BGMComponet)
+	{
+		BGMComponet->SetSound(BGMs[BGMIndex]);
 		BGMComponet->Play();
 	}
+}
+
+void AMyBGM::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
 	
 }
 
-void AMyBGM::SetBGM()
+//ゲームクリア時にBGMを流す
+void AMyBGM::PlayClearBGM()
 {
-	FString StageName = UGameplayStatics::GetCurrentLevelName(GetWorld(), true);
-
-	
-	if (StageName == "stage1")
+	if (BGMs.IsValidIndex(3))
 	{
-		if (BGMComponet && !BGMComponet->IsPlaying())
-		{
-			BGMComponet->Play();
-			
-		}
+		BGMComponet->SetSound(BGMs[3]);
+		BGMComponet->Play();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("GameOver BGM index is invalid!"));
 	}
 }
 
-void AMyBGM::StopBGM()
+//ゲームオーバー時にBGMを流す
+void AMyBGM::PlayOverBGM()
 {
-
+	if (BGMs.IsValidIndex(4))
+	{
+		BGMComponet->SetSound(BGMs[4]);
+		BGMComponet->Play();
+	}
 }
 

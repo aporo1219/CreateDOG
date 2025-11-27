@@ -20,6 +20,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+
 
 protected:
 	//BGMÇÃAudioComponet
@@ -28,19 +30,13 @@ protected:
 
 	//SoundBaseÇëzíË
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Audio)
-	USoundBase* BGMBase;
+	TArray<USoundBase*> BGMs;
 
 
 public:	
-	
-	//BGMÇÃê›íËä÷êî
-    UFUNCTION(BlueprintCallable,Category = Audio)
-	void SetBGM();
+	UFUNCTION(BlueprintCallable)
+	void PlayClearBGM();
 
-	//BGMÇí‚é~Ç∑ÇÈä÷êî
-	UFUNCTION(BlueprintCallable,Category = Audio)
-	void StopBGM();
-
-private:
-	const int BGMNum = 3;
+	UFUNCTION(BlueprintCallable)
+	void PlayOverBGM();
 };
