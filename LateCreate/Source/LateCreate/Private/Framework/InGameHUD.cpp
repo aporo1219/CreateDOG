@@ -8,39 +8,34 @@
 
 void AInGameHUD::BeginPlay()
 {
-	Super::BeginPlay();
+    Super::BeginPlay();
 
-	// WidgetBlueprint‚ÌClass‚ğæ“¾‚·‚é
-	FString ScorePath = TEXT("/Game/BP/UI/UI.UI_C"); // © Copy Reference‚ÅŠm”F
-	TSubclassOf<UUserWidget> ScoreClass =
-		TSoftClassPtr<UUserWidget>(FSoftObjectPath(*ScorePath)).LoadSynchronous();
+    // ­‚µ’x‰„‚³‚¹‚Ä¶¬
+    FTimerHandle TempHandle;
+    GetWorldTimerManager().SetTimer(TempHandle, [this]()
+        {
+            // WidgetBlueprint‚ÌClass‚ğæ“¾
+            FString ScorePath = TEXT("/Game/BP/UI/UI.UI_C");
+            TSubclassOf<UUserWidget> ScoreClass = TSoftClassPtr<UUserWidget>(FSoftObjectPath(*ScorePath)).LoadSynchronous();
 
-	// PlayerController‚ğæ“¾‚·‚é
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+            APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+            if (!ScoreClass || !PlayerController)
+            {
+                UE_LOG(LogTemp, Error, TEXT("ScoreClass or PlayerController is null!"));
+                return;
+            }
 
-	// WidgetClass‚ÆPlayerController‚ªæ“¾‚Å‚«‚½‚©”»’è‚·‚é
-	if (!ScoreClass)
-	{
-		UE_LOG(LogTemp, Error, TEXT("ScoreClass not found at %s"), *ScorePath);
-		return;
-	}
+            UUserWidget* StatusWidget = CreateWidget<UUserWidget>(PlayerController, ScoreClass);
+            if (StatusWidget)
+            {
+                StatusWidget->AddToPlayerScreen(9999); // ‘O–Ê‚É•\¦
+                StatusWidget->SetVisibility(ESlateVisibility::Visible);
+                UE_LOG(LogTemp, Log, TEXT("StatusWidget created successfully."));
+            }
+            else
+            {
+                UE_LOG(LogTemp, Error, TEXT("Failed to create StatusWidget!"));
+            }
 
-	if (!PlayerController)
-	{
-		UE_LOG(LogTemp, Error, TEXT("PlayerController not found!"));
-		return;
-	}
-
-	// Widget‚ğì¬
-	UUserWidget* StatusWidget = CreateWidget<UUserWidget>(PlayerController, ScoreClass);
-
-	if (StatusWidget)
-	{
-		StatusWidget->AddToViewport(0);
-		UE_LOG(LogTemp, Log, TEXT("StatusWidget created successfully."));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to create StatusWidget!"));
-	}
+        }, 0.05f, false); // 0.05•b’x‰„
 }

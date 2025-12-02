@@ -54,8 +54,6 @@ void UScore :: NativeConstruct()
 	
 }
 
-
-
 FText UScore::SetTextHealth()
 {
 	//dog�̎擾

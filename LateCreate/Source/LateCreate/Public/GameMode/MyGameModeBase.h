@@ -35,12 +35,6 @@ protected:
 	UPROPERTY()
 	UScore* TimeUI;
 
-	//クラス宣言
-	UPROPERTY(EditDefaultsOnly,Category = "UI")
-	TSubclassOf<UScore> UScoreClass;
-
-	
-
 	void UpdateTime();
 
 	void AddScore();
@@ -62,10 +56,14 @@ public:
 	FOnScoreChanged OnScoreChanged;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
-	TSubclassOf<class UUserWidget> GameClearClass;
+	TSoftClassPtr<class UUserWidget> GameClearClass;
 
-private:
+	//クラス宣言
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+	TSoftClassPtr<UScore> UScoreClass;
+
 	//関数宣言
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void GameClear();
+
 };

@@ -32,6 +32,7 @@ void AMyGameModeBase::BeginPlay()
 
 	//1秒ごとにUpdateTimeを呼ぶ
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AMyGameModeBase::UpdateTime, 1.0f, true);
+
 }
 
 //制限時間処理関数
@@ -48,7 +49,8 @@ void AMyGameModeBase::UpdateTime()
 	//ゲームクリア
 	if (RemainingTime <= 0)
 	{
-		GameClear();
+        FTimerHandle TempHandle;
+        GetWorldTimerManager().SetTimer(TempHandle, this, &AMyGameModeBase::GameClear, 0.05f, false);
 	}
 }
 
@@ -88,6 +90,12 @@ void AMyGameModeBase::GameClear()
         return;
     }
 
+    if (!GameClearClass.IsValid())
+    {
+        // Editor/Standalone どちらでも安全にロード
+        GameClearClass.LoadSynchronous();
+    }
+
     //  ワールドを取得
     UWorld* World = GetWorld();
     if (!World)
@@ -97,7 +105,7 @@ void AMyGameModeBase::GameClear()
     }
 
     //  UI作成
-    UUserWidget* GameClearUI = CreateWidget<UUserWidget>(World, GameClearClass);
+    UUserWidget* GameClearUI = CreateWidget<UUserWidget>(World, GameClearClass.Get());
     if (!GameClearUI)
     {
         UE_LOG(LogTemp, Error, TEXT("Failed to create GameClearUI!"));
@@ -106,7 +114,7 @@ void AMyGameModeBase::GameClear()
 
     // UI表示
     UE_LOG(LogTemp, Warning, TEXT("GameClearUI created successfully!"));
-    GameClearUI->AddToViewport(999);
+    GameClearUI->AddToPlayerScreen(999);
 
     GameClearUI->SetVisibility(ESlateVisibility::Visible);
     //  プレイヤー操作無効＋マウスカーソル表示
