@@ -66,4 +66,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void GameClear();
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTimeChanged, int32, NewTime);
+
+	UPROPERTY(BlueprintAssignable)
+	FOnTimeChanged OnTimeChanged;
 };

@@ -45,10 +45,10 @@ void UScore :: NativeConstruct()
 	if (AMyGameModeBase* GM = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld())))
 	{
 		// イベントにバインドa
-		GM->OnScoreChanged.AddDynamic(this, &UScore::UpdateScoreText);
+		GM->OnTimeChanged.AddDynamic(this, &UScore::UpdateTimeText);
 
-		
-		UpdateScoreText();
+		// 初期表示
+		UpdateTimeText(GM->GetRemainingTime());
 
 	}
 	
@@ -138,5 +138,19 @@ void UScore::UpdateScoreText()
 	if (const AMyGameModeBase* GM = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld())))
 	{
 		TextScore->SetText(FText::AsNumber(GM->GetScore()));
+	}
+}
+
+void UScore::UpdateTimeText(int32 NewTime)
+{
+	if (TextTime)
+	{
+		TextTime->SetText(FText::AsNumber(NewTime));
+
+		// 10秒以下なら赤く点滅
+		if (NewTime <= 10)
+		{
+			TextTime->SetColorAndOpacity(FSlateColor(FLinearColor::Red));
+		}
 	}
 }

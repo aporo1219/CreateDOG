@@ -43,12 +43,13 @@ void AMyGameModeBase::UpdateTime()
 	if (RemainingTime <= 0)
 	{
 		RemainingTime = 0;
-		GetWorldTimerManager().ClearTimer(TimerHandle);
+        OnTimeChanged.Broadcast((int32)RemainingTime);
 	}
 
 	//ƒQ[ƒ€ƒNƒŠƒA
 	if (RemainingTime <= 0)
 	{
+        GetWorldTimerManager().ClearTimer(TimerHandle);
         FTimerHandle TempHandle;
         GetWorldTimerManager().SetTimer(TempHandle, this, &AMyGameModeBase::GameClear, 0.05f, false);
 	}
