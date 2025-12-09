@@ -10,6 +10,7 @@
 #include "UI/StageSelectUI.h"
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include <UI/UserWidget_GameClear.h>
 
 AMyGameModeBase::AMyGameModeBase()
 {
@@ -43,8 +44,9 @@ void AMyGameModeBase::UpdateTime()
 	if (RemainingTime <= 0)
 	{
 		RemainingTime = 0;
-        OnTimeChanged.Broadcast((int32)RemainingTime);
 	}
+
+    OnTimeChanged.Broadcast((int32)RemainingTime);
 
 	//ゲームクリア
 	if (RemainingTime <= 0)
@@ -58,20 +60,31 @@ void AMyGameModeBase::UpdateTime()
 //スコア処理関数
 void AMyGameModeBase::AddScore()
 {
+    bool ChangeScore = false;
+
 	if (const ADog* Dog = Cast<ADog>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
 	{
+        //弾の発射でスコアを減らす
 		Score -= Dog->ShootScore;
 
-		OnScoreChanged.Broadcast();
-
+        ChangeScore = true;
+        
 		UE_LOG(LogTemp, Warning, TEXT("Score Updated: %d"), (int)Score);
 	}
-	else if (const ABallActor* BulletP = Cast<ABallActor>(UGameplayStatics::GetActorOfClass(GetWorld(),ABallActor::StaticClass())))
+
+     if (const ABallActor* BulletP = Cast<ABallActor>(UGameplayStatics::GetActorOfClass(GetWorld(),ABallActor::StaticClass())))
 	{
+        //弾が敵に当たるとスコアを増やす
 		Score -= BulletP->HitScore;
 
-		OnScoreChanged.Broadcast();
+        ChangeScore = true;
 	}
+
+    if (ChangeScore)
+    {
+        //スコアの変動をUIに送る
+        OnScoreChanged.Broadcast();
+    }
 }
 
 //ゲームクリア処理
@@ -124,7 +137,7 @@ void AMyGameModeBase::GameClear()
     {
         PC->bShowMouseCursor = true;
         PC->SetInputMode(FInputModeGameAndUI());
-        PC->DisableInput(PC);
+        PC->SetPause(true);
     }
 
     //  ゲーム停止

@@ -44,11 +44,15 @@ void UScore :: NativeConstruct()
 	}
 	if (AMyGameModeBase* GM = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld())))
 	{
-		// イベントにバインドa
+		// イベントにバインド
 		GM->OnTimeChanged.AddDynamic(this, &UScore::UpdateTimeText);
+
+		GM->OnScoreChanged.AddDynamic(this, &UScore::UpdateScoreText);
 
 		// 初期表示
 		UpdateTimeText(GM->GetRemainingTime());
+
+		UpdateScoreText();
 
 	}
 	

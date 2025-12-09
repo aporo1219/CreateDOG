@@ -30,4 +30,6 @@ protected:
 public:
 	//ネイティブコンストラクト
 	virtual void NativeConstruct() override;
+
+	UButton* GetStageSelectButton() { return StageSelectButton; };
 };

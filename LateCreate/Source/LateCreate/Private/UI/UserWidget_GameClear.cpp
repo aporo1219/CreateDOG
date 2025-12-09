@@ -23,13 +23,24 @@ void UUserWidget_GameClear::NativeConstruct()
 
 	if (StageSelectButton)
 	{
+
+		// ボタンにフォーカスを当てる
+		StageSelectButton->SetKeyboardFocus();
+
 		//バインド
 		StageSelectButton->OnClicked.AddDynamic(this, &UUserWidget_GameClear::OnStageSelectCliked);
 	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("StageSelectButton is NULL!"));
+	}
 }
 
+//クリックされたときの処理
 void UUserWidget_GameClear::OnStageSelectCliked()
 {
+	UE_LOG(LogTemp, Warning, TEXT("OnStageSelectCliked CALLED!!!"));
+
 	// ポーズ解除
 	UGameplayStatics::SetGamePaused(GetWorld(), false);
 	UGameplayStatics::OpenLevel(GetWorld(),TEXT( "StageSelect"));

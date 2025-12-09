@@ -59,6 +59,9 @@ private:
 	UFUNCTION()
 	void UpdateScoreText();
 
+	UFUNCTION()
+	void UpdateTimeText(int32 NewTime);
+
 	//•Ï”éŒ¾
 	float RedTimeText = 10.0f;
 
