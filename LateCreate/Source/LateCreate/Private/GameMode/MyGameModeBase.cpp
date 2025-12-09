@@ -90,56 +90,41 @@ void AMyGameModeBase::AddScore()
 //ゲームクリア処理
 void AMyGameModeBase::GameClear()
 {
-    // GameClearClass が設定されていなければロード
     if (!GameClearClass)
     {
-        UE_LOG(LogTemp, Warning, TEXT("GameClearClass is null. Trying to load from asset..."));
-        GameClearClass = LoadClass<UUserWidget>(nullptr, TEXT("/Game/BP/UI/GameClear_UI.GameClear_UI_C"));
+        GameClearClass = LoadClass<UUserWidget_GameClear>(nullptr, TEXT("/Game/BP/UI/GameClear_UI.GameClear_UI_C"));
     }
 
-    //  それでもロードできない場合
     if (!GameClearClass)
     {
         UE_LOG(LogTemp, Error, TEXT("Failed to load GameClear_UI!"));
         return;
     }
 
-    if (!GameClearClass.IsValid())
-    {
-        // Editor/Standalone どちらでも安全にロード
-        GameClearClass.LoadSynchronous();
-    }
-
-    //  ワールドを取得
     UWorld* World = GetWorld();
-    if (!World)
-    {
-        UE_LOG(LogTemp, Error, TEXT("World is null!"));
-        return;
-    }
+    if (!World) return;
 
-    //  UI作成
-    UUserWidget* GameClearUI = CreateWidget<UUserWidget>(World, GameClearClass.Get());
+    UUserWidget_GameClear* GameClearUI = CreateWidget<UUserWidget_GameClear>(World, GameClearClass.Get());
     if (!GameClearUI)
     {
         UE_LOG(LogTemp, Error, TEXT("Failed to create GameClearUI!"));
         return;
     }
 
-    // UI表示
-    UE_LOG(LogTemp, Warning, TEXT("GameClearUI created successfully!"));
-    GameClearUI->AddToPlayerScreen(999);
-
+    GameClearUI->AddToViewport(999);
     GameClearUI->SetVisibility(ESlateVisibility::Visible);
-    //  プレイヤー操作無効＋マウスカーソル表示
+
     APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
     if (PC)
     {
         PC->bShowMouseCursor = true;
-        PC->SetInputMode(FInputModeGameAndUI());
-        PC->SetPause(true);
+        PC->bEnableClickEvents = true;
+        PC->bEnableMouseOverEvents = true;
+
+        FInputModeUIOnly InputMode;
+        InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+        PC->SetInputMode(InputMode);
     }
 
-    //  ゲーム停止
     UGameplayStatics::SetGamePaused(World, true);
 }

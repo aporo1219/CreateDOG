@@ -34,6 +34,23 @@ void UUserWidget_GameClear::NativeConstruct()
 	{
 		UE_LOG(LogTemp, Error, TEXT("StageSelectButton is NULL!"));
 	}
+
+	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+	if (PC)
+	{
+		PC->bShowMouseCursor = true;          // マウス表示
+		PC->bEnableClickEvents = true;        // クリックを受け付ける
+		PC->bEnableMouseOverEvents = true;    // ホバーを受け付ける
+
+
+		FInputModeUIOnly InputMode;
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		PC->SetInputMode(InputMode);
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("StageSelectButton: %s"), StageSelectButton ? TEXT("Valid") : TEXT("NULL"));
+
+
 }
 
 //クリックされたときの処理
@@ -43,5 +60,8 @@ void UUserWidget_GameClear::OnStageSelectCliked()
 
 	// ポーズ解除
 	UGameplayStatics::SetGamePaused(GetWorld(), false);
+
+
 	UGameplayStatics::OpenLevel(GetWorld(),TEXT( "StageSelect"));
 }
+
