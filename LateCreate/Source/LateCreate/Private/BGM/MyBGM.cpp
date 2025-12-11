@@ -37,7 +37,10 @@ void AMyBGM::BeginPlay()
 	{
 		BGMIndex = 2;
 	}
-
+	else if (StageName == "Title")
+	{
+		BGMIndex = 3;
+	}
 	//BGM再生
 	if (BGMs.IsValidIndex(BGMIndex) && BGMComponet)
 	{
@@ -56,9 +59,9 @@ void AMyBGM::Tick(float DeltaTime)
 //ゲームクリア時にBGMを流す
 void AMyBGM::PlayClearBGM()
 {
-	if (BGMs.IsValidIndex(3))
+	if (BGMs.IsValidIndex(FORE))
 	{
-		BGMComponet->SetSound(BGMs[3]);
+		BGMComponet->SetSound(BGMs[FORE]);
 		BGMComponet->Play();
 	}
 	else
@@ -70,9 +73,9 @@ void AMyBGM::PlayClearBGM()
 //ゲームオーバー時にBGMを流す
 void AMyBGM::PlayOverBGM()
 {
-	if (BGMs.IsValidIndex(4))
+	if (BGMs.IsValidIndex(FIVE))
 	{
-		BGMComponet->SetSound(BGMs[4]);
+		BGMComponet->SetSound(BGMs[FIVE]);
 		BGMComponet->Play();
 	}
 }

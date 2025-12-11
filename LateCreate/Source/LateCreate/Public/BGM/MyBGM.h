@@ -39,4 +39,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void PlayOverBGM();
+
+private:
+	const int FORE{ 4 };
+	const int FIVE{ 5 };
 };
