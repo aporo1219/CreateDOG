@@ -116,8 +116,9 @@ private:
 	USceneComponent* MuzzlePoint;
 
 	//ˆÚ“®–Ú•WƒNƒ‰ƒX
-   /* UPROPERTY(EditDefaultsOnly,Category = "Move")
-	TSubclassOf<class AGoalPoint> GoalPointClass;*/
+    UPROPERTY(EditDefaultsOnly,Category = "Move")
+	TSubclassOf<AActor> MoveGoalPoint;
+
 
 //•Ï”éŒ¾
 private:
