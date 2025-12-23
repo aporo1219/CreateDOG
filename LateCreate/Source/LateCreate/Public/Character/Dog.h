@@ -117,7 +117,10 @@ private:
 
 	//移動目標クラス
     UPROPERTY(EditDefaultsOnly,Category = "Move")
-	TSubclassOf<AActor> MoveGoalPoint;
+	TSubclassOf<AActor> MoveGoalPointClass;
+
+	UPROPERTY()
+	AActor* CurrentMoveMarker;
 
 
 //変数宣言
@@ -157,6 +160,9 @@ private:
 	//ライトの位置補正
 	const FVector SpotLightPos = { 0.f,0.f,200.0f };
 	const FRotator SpotLightRot = { -75.0f,0.f,0.f };
+
+	//移動目標地点
+	FVector MoveTargetLoc;
 
 	//関数宣言
 	//ゲームオーバー関数

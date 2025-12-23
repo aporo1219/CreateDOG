@@ -364,10 +364,24 @@ void ADog::MoveToMousePoint(const FInputActionValue& Value)
 
 		if (Hit.bBlockingHit)
 		{
-			FVector TargetLocation = Hit.ImpactPoint;
+			MoveTargetLoc = Hit.ImpactPoint;
+
+			//既存マーカーの削除
+			if (CurrentMoveMarker)
+			{
+				CurrentMoveMarker->Destroy();
+				CurrentMoveMarker = nullptr;
+			}
+
+			//マーカーの作成
+			if (MoveGoalPointClass)
+			{
+				CurrentMoveMarker = GetWorld()->SpawnActor<AActor>
+					(MoveGoalPointClass, MoveTargetLoc, FRotator::ZeroRotator);
+			}
 
 			//NavMesh上を移動
-			UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), TargetLocation);
+			UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), MoveTargetLoc);
 
 		}
 	}
