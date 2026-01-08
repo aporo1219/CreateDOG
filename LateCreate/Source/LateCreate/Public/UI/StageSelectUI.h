@@ -29,10 +29,6 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* Stage4Button;
 
-	//フェードアウトのバインド宣言
-	UPROPERTY(meta = (BindWidgetAnim), Transient)
-	UWidgetAnimation* FadeOutAnim;
-	
 
 	//リスト格納用
 	TArray<UButton*> StageButtons;
@@ -56,10 +52,6 @@ private:
 	void OnStage4Clicked();
 
 	void OpenStageIndex(int32 Index);
-
-	//フェードアウト処理関数
-	UFUNCTION()
-	void OnFadeOutFinished();
 
 	//遷移予定のステージを一時保存
 	FName PendingStageName;

@@ -207,6 +207,18 @@ void ADog::Tick(float DeltaTime)
 		JumpSECheck = false;
 	}
 
+	//到着判定
+	if (CurrentMoveMarker)
+	{
+		float dis = FVector::Dist(GetActorLocation(), MoveTargetLoc);
+
+		if (dis < GoalLocRange)
+		{
+			//マーカーを消す
+			CurrentMoveMarker->Destroy();
+			CurrentMoveMarker = nullptr;
+		}
+	}
 	//再生されていlevelの取得
 	StageName = UGameplayStatics::GetCurrentLevelName(GetWorld(), true);
 }

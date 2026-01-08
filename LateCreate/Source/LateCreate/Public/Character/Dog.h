@@ -164,6 +164,10 @@ private:
 	//移動目標地点
 	FVector MoveTargetLoc;
 
+	//到着目標判定の距離
+	UPROPERTY(EditAnywhere,Category = "Move")
+	float GoalLocRange = 250.0f;
+
 	//関数宣言
 	//ゲームオーバー関数
 	void GameOver();
