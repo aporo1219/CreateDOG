@@ -422,33 +422,6 @@ void ADog::Switch(const FInputActionValue& Value)
 	}
 }
 
-//ダメージ処理関数
-void ADog::TakeDamege(float DamegeAmount)
-{
-	Health -= DamegeAmount;
-	
-	//被弾SE
-	if (SoundToPlayHitByEnemy)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, SoundToPlayHitByEnemy, GetActorLocation());
-	}
-
-	if (Health < 0)
-	{
-		Health = 0;
-	}
-
-	//UIへ通知
-	OnHealthChanged.Broadcast();
-
-	//ゲームオーバー処理
-	if (Health <= 0)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("GAME OVER"));
-		GameOver();
-	}
-}
-
 //ゲームオーバー関数
 void ADog::GameOver()
 {
@@ -518,3 +491,74 @@ void ADog::GameOver()
 	UGameplayStatics::SetGamePaused(GetWorld(), true);
 }
 
+//点滅開始とダメージ処理関数
+void ADog::StartBlinkAndTakeDamege(float damege)
+{
+	//無敵中は無視
+	if (bIsInvincible)
+		return;
+
+	bIsInvincible = true;
+
+	//ダメージ
+	Health -= damege;
+
+	//被弾SE
+	if (SoundToPlayHitByEnemy)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, SoundToPlayHitByEnemy, GetActorLocation());
+	}
+
+	if (Health < 0)
+	{
+		Health = 0;
+	}
+
+	//UIへ通知
+	OnHealthChanged.Broadcast();
+
+	//ゲームオーバー処理
+	if (Health <= 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GAME OVER"));
+		GameOver();
+	}
+
+	//倒れてる途中ならば無視
+	GetWorldTimerManager().ClearAllTimersForObject(this);
+
+	BlinkCount = 0;
+	bIsVisible = true;
+
+	//0.1秒ごとに点滅
+	GetWorldTimerManager().SetTimer
+	(
+		BlinkTimerHandle,
+		this,
+		&ADog::Blink,
+		BlinkInterval,
+		true
+	);
+}
+
+//点滅
+void ADog::Blink()
+{
+	bIsVisible = !bIsVisible;
+	SetActorHiddenInGame(!bIsVisible);
+
+	BlinkCount++;
+
+	if (BlinkCount >= MaxBlinkCount)
+	{
+		GetWorldTimerManager().ClearTimer(BlinkTimerHandle);
+	}
+}
+
+////無敵処理関数
+//void ADog::EndInvicnble()
+//{
+//	bIsInvincible = false;
+//
+//	SetActorHiddenInGame(false);
+//}

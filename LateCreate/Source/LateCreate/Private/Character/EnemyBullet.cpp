@@ -106,7 +106,7 @@ void AEnemyBullet::OnHit(UPrimitiveComponent* OverlappedComp,
 	ADog* Dog = Cast<ADog>(OtherActor);
 	if (Dog)
 	{
-		Dog->TakeDamege(Damege);
+		Dog->StartBlinkAndTakeDamege(Damege);
 	}
 
 	//�ʂ̍폜

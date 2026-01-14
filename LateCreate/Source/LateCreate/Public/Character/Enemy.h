@@ -70,7 +70,21 @@ public:
 
 	void Respawn();
 
+	void StartBlinkAndDie();//点滅開始関数
+
+	void Blink();//点滅処理関数
+
 private:
 	//変数宣言
 	float EnemyTurnAngle = 270.0f;
+	//ダメージ時の点滅変数
+	FTimerHandle BlinkTimerHandle;
+	FTimerHandle DieTimerHandle;
+
+	bool bIsVisible = true;
+
+	int BlinkCount = 0;
+	const int MaxBlinkCount = 6;//３回点滅
+
+	float BlinkInterval = 0.1f;
 };

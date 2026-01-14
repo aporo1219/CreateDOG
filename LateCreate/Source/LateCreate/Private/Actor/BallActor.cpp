@@ -91,7 +91,7 @@ void ABallActor::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 
 	if (AEnemy* Enemy = Cast<AEnemy>(OtherActor))
 	{
-		Enemy->TakeDamegeAndDie();
+		Enemy->StartBlinkAndDie();
 		UE_LOG(LogTemp, Warning, TEXT("Hit AEnemy class! Destroying it."));
 		AMyGameModeBase* GM = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 		if (GM)

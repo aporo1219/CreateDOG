@@ -239,3 +239,37 @@ void AEnemy::EnemyMove()
         SetActorLocation(CurrentLoc + SlideDelta, true);
     }
 }
+
+//点滅開始関数
+void AEnemy::StartBlinkAndDie()
+{
+    //倒れてる処理中なら無視
+    GetWorldTimerManager().ClearAllTimersForObject(this);
+
+    BlinkCount = 0;
+    bIsVisible = true;
+
+    //0.1秒ごとに点滅
+    GetWorldTimerManager().SetTimer(
+        BlinkTimerHandle,
+        this,
+        &AEnemy::Blink,
+        BlinkInterval,
+        true
+    );
+}
+
+//点滅処理
+void AEnemy::Blink()
+{
+    bIsVisible = !bIsVisible;
+    SetActorHiddenInGame(!bIsVisible);
+
+    BlinkCount++;
+
+    if (BlinkCount >= MaxBlinkCount)
+    {
+        GetWorldTimerManager().ClearTimer(BlinkTimerHandle);
+        TakeDamegeAndDie();
+    }
+}

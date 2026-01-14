@@ -38,6 +38,12 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	//点滅開始関数
+	UFUNCTION()
+	void StartBlinkAndTakeDamege(float damege);
+	//点滅処理関数
+	void Blink();
+
 private:
 	//主人公のメッシュ カプセル
 	UPROPERTY(VisibleAnywhere, Category = Character, meta = (AllowPrivaetAccess = "true"))
@@ -168,9 +174,22 @@ private:
 	UPROPERTY(EditAnywhere,Category = "Move")
 	float GoalLocRange = 250.0f;
 
+	//敵の弾ヒット時関連の変数
+	FTimerHandle BlinkTimerHandle;
+
+	bool bIsVisible = true;
+	bool bIsInvincible = false;
+
+	int BlinkCount = 0;
+	const int MaxBlinkCount = 6;//3回点滅
+
+	float BlinkInterval = 0.1f;
+
 	//関数宣言
 	//ゲームオーバー関数
 	void GameOver();
+
+
 
 	UPROPERTY(EditAnywhere,Category = "Sound")
 	USoundBase* SoundToPlayJump;
@@ -205,10 +224,6 @@ public:
     float GetHealth() const { return Health; }
     float GetHealthMax() const { return MaxHealth; }
 
-
-	//ダメージ処理関数
-	UFUNCTION()
-	void TakeDamege(float DamegeAmount);
 
 	// 体力変更時のイベント
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHealthChanged);
