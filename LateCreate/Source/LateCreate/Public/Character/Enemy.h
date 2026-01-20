@@ -74,6 +74,8 @@ public:
 
 	void Blink();//“_–Åˆ—ŠÖ”
 
+	void HitbyBullet();
+
 private:
 	//•Ï”éŒ¾
 	float EnemyTurnAngle = 270.0f;
@@ -87,4 +89,12 @@ private:
 	const int MaxBlinkCount = 6;//‚R‰ñ“_–Å
 
 	float BlinkInterval = 0.1f;
+
+	bool bBlinkMidWay;//“_–Å’†‚©
+
+	bool bDie;//€–S’†‚©
+
+	bool bScoreChenge;
+
+	int32 killscore = 100;
 };

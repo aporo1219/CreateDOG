@@ -23,23 +23,25 @@ void UFadeWidget::NativeConstruct()
 
 void UFadeWidget::PlayFadeOut()
 {
-	//UE_LOG(LogTemp, Warning, TEXT("PlayFadeOut CALLED"));
-	//
-	//BindToAnimationFinished(
-	//	FadeOut,
-	//	FWidgetAnimationDynamicEvent::CreateUFunction(
-	//		this,
-	//		FName("HandleFadeOutFinished")
-	//	)
-	//);
-
-	if (FadeOut)
-	{
-		PlayAnimation(FadeOut);
-	}
-	else
+	//UE_LOG(LogTemp, Warning, TEXT("PlayFadeOut CALLED"))
+	
+	if (!FadeOut)
 	{
 		UE_LOG(LogTemp, Error, TEXT("FadeOutAnim NULL in PlayFadeOut"));
+		return;
+	}
+
+	UUMGSequencePlayer* Player = PlayAnimation(FadeOut);
+
+	if (Player)
+	{
+		Player->OnSequenceFinishedPlaying().AddLambda(
+			[this](UUMGSequencePlayer& FinishedPlayer)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("FadeWidget FadeOut Finished"));
+				OnFadeOutFinished.Broadcast();
+			}
+		);
 	}
 }
 
@@ -49,10 +51,4 @@ void UFadeWidget::PlayFadeIn()
 	{
 		PlayAnimation(FadeIn);
 	}
-}
-
-void UFadeWidget::HandleFadeOutFinished()
-{
-	UE_LOG(LogTemp, Warning, TEXT("FadeWidget FadeOut Finished"));
-	OnFadeOutFinished.Broadcast();
 }

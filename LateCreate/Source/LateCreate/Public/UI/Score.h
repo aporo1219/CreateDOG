@@ -66,4 +66,11 @@ private:
 	float RedTimeText = 10.0f;
 
 	float Score = 1000.0f;
+
+public:
+	//テキスト表示
+	//UFUNCTION(BlueprintCallable)
+	//void ShowDialogue(const FText& Text, float DisplayTime);
+
+
 };

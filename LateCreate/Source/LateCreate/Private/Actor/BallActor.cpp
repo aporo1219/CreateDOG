@@ -91,22 +91,7 @@ void ABallActor::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 
 	if (AEnemy* Enemy = Cast<AEnemy>(OtherActor))
 	{
-		Enemy->StartBlinkAndDie();
-		UE_LOG(LogTemp, Warning, TEXT("Hit AEnemy class! Destroying it."));
-		AMyGameModeBase* GM = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-		if (GM)
-		{
-			GM->Score += HitScore;
-			//スコアが0以下になったら0にする
-			if (GM->Score < 0)
-			{
-				GM->Score = 0;
-				//UI通知
-				GM->OnScoreChanged.Broadcast();
-			}
-		}
-		//UI通知
-		GM->OnScoreChanged.Broadcast();
+		Enemy->HitbyBullet();
 	}
 	
 	// 弾自身も消す

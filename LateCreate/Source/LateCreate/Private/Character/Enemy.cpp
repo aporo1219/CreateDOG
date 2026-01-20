@@ -7,6 +7,7 @@
 #include  "Character/EnemyBullet.h"
 #include "Character/Dog.h"
 #include "Actor/EnemySpawn.h"
+#include "GameMode/MyGameModeBase.h"
 #include "TimerManager.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "UObject/ConstructorHelpers.h"
@@ -58,6 +59,10 @@ AEnemy::AEnemy()
         EnemyBulletClass = BulletBP.Class;
     }
 
+    //変数の初期化--------------------
+    bBlinkMidWay = false;
+    bDie = false;
+    bScoreChenge = false;
 }
 
 // Called when the game starts or when spawned
@@ -131,6 +136,7 @@ void AEnemy::Tick(float DeltaTime)
     {
         EnemyMove();
     }
+
 }
 
 // Called to bind functionality to input
@@ -184,6 +190,17 @@ void AEnemy::Fire()
 
 void AEnemy::TakeDamegeAndDie()
 {
+    if (bScoreChenge)
+        return;
+
+    bScoreChenge = true;
+
+    // スコア加算
+    if (AMyGameModeBase* GM =
+        Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(this)))
+    {
+        GM->AddEnemyKillScore(killscore);
+    }
     //被弾SE
     if (SoundToPlayHit)
     {
@@ -243,8 +260,18 @@ void AEnemy::EnemyMove()
 //点滅開始関数
 void AEnemy::StartBlinkAndDie()
 {
+    if (bBlinkMidWay)
+        return;
+
+    bBlinkMidWay = true;
+
     //倒れてる処理中なら無視
-    GetWorldTimerManager().ClearAllTimersForObject(this);
+    GetWorldTimerManager().ClearTimer(FireTimerHandle);
+
+    if (EnemyMesh)
+    {
+        EnemyMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    }
 
     BlinkCount = 0;
     bIsVisible = true;
@@ -270,6 +297,19 @@ void AEnemy::Blink()
     if (BlinkCount >= MaxBlinkCount)
     {
         GetWorldTimerManager().ClearTimer(BlinkTimerHandle);
+        bBlinkMidWay = false;
         TakeDamegeAndDie();
     }
+}
+
+//ダメージ受付関数
+void AEnemy::HitbyBullet()
+{
+    if (bBlinkMidWay || bDie)
+    {
+        return;
+    }
+
+    bDie = true;
+    StartBlinkAndDie();
 }

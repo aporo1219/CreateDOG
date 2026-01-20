@@ -128,3 +128,9 @@ void AMyGameModeBase::GameClear()
 
     UGameplayStatics::SetGamePaused(World, true);
 }
+
+void AMyGameModeBase::AddEnemyKillScore(int32 killscore)
+{
+    Score += killscore;
+    OnScoreChanged.Broadcast();
+}

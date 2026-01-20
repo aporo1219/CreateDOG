@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Animation/WidgetAnimation.h"
+#include "Animation/UMGSequencePlayer.h"
 #include "FadeWidget.generated.h"
 
 /**
@@ -40,9 +41,6 @@ protected:
 
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	UWidgetAnimation* FadeIn;
-
-	UFUNCTION()
-	void HandleFadeOutFinished();
 
 private:
 	bool bIsReady = false;

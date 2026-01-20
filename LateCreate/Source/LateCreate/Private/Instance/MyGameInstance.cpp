@@ -47,6 +47,8 @@ void UMyGameInstance::OnFadeOutFinished()
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnFadeOutFinished CALLED"));
 
+	UGameplayStatics::OpenLevel(this, TEXT("stage1"));
+
 	if (!PendingLevelName.IsNone())
 	{
 		UGameplayStatics::OpenLevel(this, PendingLevelName);

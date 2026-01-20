@@ -219,6 +219,7 @@ void ADog::Tick(float DeltaTime)
 			CurrentMoveMarker = nullptr;
 		}
 	}
+
 	//Ä¶‚³‚ê‚Ä‚¢level‚Ìæ“¾
 	StageName = UGameplayStatics::GetCurrentLevelName(GetWorld(), true);
 }
