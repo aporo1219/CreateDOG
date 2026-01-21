@@ -9,8 +9,23 @@
 /**
  * 
  */
+ 
+ /*enum Dialogue
+ {
+    ATTACK,
+	MOVEMENT,
+	JUMP,
+	A_LITTLE_MORE,
+	DANGEROUS,
+	STAGE_1,
+	STAGE_2,
+	STAGE_3,
+	STAGE_4,
+ };*/
+
 
 class UScore;
+
 
 UCLASS()
 class LATECREATE_API AMyGameModeBase : public AGameModeBase
@@ -68,6 +83,8 @@ public:
 
 	UFUNCTION()
 	void AddEnemyKillScore(int32 killScore);
+
+	/*FText GetDialogueText(Dialogue dialogue) const;*/
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTimeChanged, int32, NewTime);
 

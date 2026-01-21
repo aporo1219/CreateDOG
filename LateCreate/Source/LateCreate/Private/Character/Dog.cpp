@@ -350,6 +350,7 @@ void ADog::Jump(const FInputActionValue& Value)
 		//ジャンプ
 		ACharacter::Jump();
 
+		OnSayDialogue.Broadcast(FText::FromString(TEXT("ジャンプだ")));
 		//ジャンプSE
 		if (SoundToPlayJump && !JumpSECheck)
 		{
@@ -392,6 +393,8 @@ void ADog::MoveToMousePoint(const FInputActionValue& Value)
 				CurrentMoveMarker = GetWorld()->SpawnActor<AActor>
 					(MoveGoalPointClass, MoveTargetLoc, FRotator::ZeroRotator);
 			}
+			 
+			OnSayDialogue.Broadcast(FText::FromString(TEXT("あそこに移動だ")));
 
 			//NavMesh上を移動
 			UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), MoveTargetLoc);
@@ -406,6 +409,8 @@ void ADog::Switch(const FInputActionValue& Value)
 	if (!IsChangeAttack)
 	{
 		IsChangeAttack = true;
+		OnSayDialogue.Broadcast(FText::FromString(TEXT("攻撃だ")));
+
 		//切り替えSE
 		if (SoundToPlayChenge)
 		{
@@ -415,6 +420,8 @@ void ADog::Switch(const FInputActionValue& Value)
 	else
 	{
 		IsChangeAttack = false;
+		OnSayDialogue.Broadcast(FText::FromString(TEXT("移動だ")));
+
 		//切り替えSE
 		if (SoundToPlayChenge)
 		{

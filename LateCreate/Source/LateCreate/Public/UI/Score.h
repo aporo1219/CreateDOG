@@ -35,6 +35,10 @@ protected:
 	//ネイティブコンストラクト
 	virtual void NativeConstruct() override;
 
+	//セリフのテキストボックス
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* DialogueText;
+
 private:
 	//残り体力
 	UFUNCTION()
@@ -62,15 +66,22 @@ private:
 	UFUNCTION()
 	void UpdateTimeText(int32 NewTime);
 
+	FTimerHandle HideTimerHandle;
+
 	//変数宣言
 	float RedTimeText = 10.0f;
 
 	float Score = 1000.0f;
 
+
+
 public:
 	//テキスト表示
-	//UFUNCTION(BlueprintCallable)
-	//void ShowDialogue(const FText& Text, float DisplayTime);
+	UFUNCTION(BlueprintCallable)
+	void ShowDialogue(const FText& Text, float DisplayTime);
 
+	void HideDialogue();
 
+	UFUNCTION()
+	void ReceveDialogue(FText InDialogueText);
 };

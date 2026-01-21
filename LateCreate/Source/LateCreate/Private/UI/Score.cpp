@@ -6,6 +6,7 @@
 #include "Character/Dog.h"
 #include "GameMode/MyGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "TimerManager.h"
 
 void UScore :: NativeConstruct()
 {
@@ -37,6 +38,7 @@ void UScore :: NativeConstruct()
 		// イベントにバインド
 		Dog->OnHealthChanged.AddDynamic(this, &UScore::UpdateHealthText);
 
+		Dog->OnSayDialogue.AddDynamic(this, &UScore::ReceveDialogue);
 		// 初期表示
 		UpdateHealthText();
 
@@ -156,5 +158,50 @@ void UScore::UpdateTimeText(int32 NewTime)
 		{
 			TextTime->SetColorAndOpacity(FSlateColor(FLinearColor::Red));
 		}
+	}
+}
+
+//セリフを受け取る
+void UScore::ReceveDialogue(FText InDialogueText)
+{
+	UE_LOG(LogTemp, Warning, TEXT("ReceiveDialogue: %s"), *InDialogueText.ToString());
+
+	ShowDialogue(InDialogueText, 2.0f);
+}
+
+//セリフを表示させる関数
+void UScore::ShowDialogue(const FText& Text, float DisplayTime)
+{
+	if (!DialogueText)
+	{
+		UE_LOG(LogTemp, Error, TEXT("DialogueText is NULL"));
+		return;
+	}
+
+	/*if (!DialogueText)
+		return;*/
+
+	DialogueText->SetText(Text);
+	DialogueText->SetVisibility(ESlateVisibility::Visible);
+
+	if (DisplayTime > 0.f)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(HideTimerHandle);
+		GetWorld()->GetTimerManager().SetTimer(
+			HideTimerHandle,
+			this,
+			&UScore::HideDialogue,
+			DisplayTime,
+			false
+		);
+	}
+}
+
+//セリフを隠す
+void UScore::HideDialogue()
+{
+	if (DialogueText)
+	{
+		DialogueText->SetVisibility(ESlateVisibility::Hidden);
 	}
 }

@@ -134,3 +134,31 @@ void AMyGameModeBase::AddEnemyKillScore(int32 killscore)
     Score += killscore;
     OnScoreChanged.Broadcast();
 }
+
+//ƒZƒŠƒtæ“¾‚ÌŠÖ”
+//FText AMyGameModeBase::GetDialogueText(Dialogue dialogue) const
+//{
+//    switch (dialogue)
+//    {
+//    case ATTACK:
+//        return FText::FromString(TEXT("UŒ‚‚µ‚ë!"));
+//    case MOVEMENT:
+//        return FText::FromString(TEXT("ˆÚ“®‚µ‚ë!"));
+//    case JUMP:
+//        return FText::FromString(TEXT("ƒWƒƒƒ“ƒv‚µ‚ë!"));
+//    case A_LITTLE_MORE:
+//        return FText::FromString(TEXT("‚à‚¤­‚µ‚¾!"));
+//    case DANGEROUS:
+//        return FText::FromString(TEXT("Šë‚È‚¢!"));
+//    case STAGE_1:
+//        return FText::FromString(TEXT("–½‰^‚Í”C‚¹‚½‚¼"));
+//    case STAGE_2:
+//        return FText::FromString(TEXT("“G‚Ì“®‚«‚É˜f‚í‚³‚ê‚é‚È"));
+//    case STAGE_3:
+//        return FText::FromString(TEXT("‘«Œ³’ˆÓ"));
+//    case STAGE_4:
+//        return FText::FromString(TEXT("‘€ì‚ª”½“]‚µ‚Ä‚µ‚Ü‚¤"));
+//    }
+//
+//    return FText();
+//}

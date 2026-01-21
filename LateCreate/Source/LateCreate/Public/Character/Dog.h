@@ -233,6 +233,17 @@ public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnScoreChanged);
 	UPROPERTY(BlueprintAssignable, Category = "Event")
 	FOnScoreChanged OnScoreChanged;
+    
+	//セリフ
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(
+		FOnSayDialogue,
+		FText,
+		DialogueText
+	);
+
+	UPROPERTY(BlueprintAssignable)
+	FOnSayDialogue OnSayDialogue;
+
 	//クラス宣言
 // 補助コリジョン用の Capsule
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collision")
