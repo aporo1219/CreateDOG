@@ -178,8 +178,6 @@ void UScore::ShowDialogue(const FText& Text, float DisplayTime)
 		return;
 	}
 
-	/*if (!DialogueText)
-		return;*/
 
 	DialogueText->SetText(Text);
 	DialogueText->SetVisibility(ESlateVisibility::Visible);

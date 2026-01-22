@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Character/Dog.h"
@@ -10,7 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Actor/BallActor.h"
-#include "Blueprint/AIBlueprintHelperLibrary.h"//NavMeshˆÚ“®‚É•K—v‚ÈƒCƒ“ƒNƒ‹[ƒh
+#include "Blueprint/AIBlueprintHelperLibrary.h"//NavMeshç§»å‹•ã«å¿…è¦ãªã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameMode/MyGameModeBase.h"
@@ -23,68 +23,68 @@ ADog::ADog()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
-	// ACharacter‚É‚ÍƒfƒtƒHƒ‹ƒg‚ÅCapsuleComponent‚ªRoot
+	// ACharacterã«ã¯ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§CapsuleComponentãŒRoot
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.f);
 
 	RootComponent = GetCapsuleComponent();
 
 
 	//HeadCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HeadCollision"));
-	//HeadCollision->SetupAttachment(GetMesh(), FName("head")); // headƒ{[ƒ“‚ÉƒAƒ^ƒbƒ`
+	//HeadCollision->SetupAttachment(GetMesh(), FName("head")); // headãƒœãƒ¼ãƒ³ã«ã‚¢ã‚¿ãƒƒãƒ
 	//HeadCollision->SetCapsuleSize(12.f, 15.f);
 	//HeadCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 	//HeadCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	//// --- ‘O‘«i¶j ---
+	//// --- å‰è¶³ï¼ˆå·¦ï¼‰ ---
 	//FrontLeftLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("FrontLeftLegCollision"));
 	//FrontLeftLegCollision->SetupAttachment(GetMesh(), FName("front_left_leg"));
 	//FrontLeftLegCollision->SetCapsuleSize(6.f, 12.f);
 	//FrontLeftLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 	//FrontLeftLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	//// --- ‘O‘«i‰Ej ---
+	//// --- å‰è¶³ï¼ˆå³ï¼‰ ---
 	//FrontRightLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("FrontRightLegCollision"));
 	//FrontRightLegCollision->SetupAttachment(GetMesh(), FName("front_right_leg"));
 	//FrontRightLegCollision->SetCapsuleSize(6.f, 12.f);
 	//FrontRightLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 	//FrontRightLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	
-	//// --- Œã‘«i¶j ---
+	//// --- å¾Œè¶³ï¼ˆå·¦ï¼‰ ---
 	//BackLeftLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("BackLeftLegCollision"));
 	//BackLeftLegCollision->SetupAttachment(GetMesh(), FName("back_left_leg"));
 	//BackLeftLegCollision->SetCapsuleSize(6.f, 12.f);
 	//BackLeftLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 	//BackLeftLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	//// --- Œã‘«i‰Ej ---
+	//// --- å¾Œè¶³ï¼ˆå³ï¼‰ ---
 	//BackRightLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("BackRightLegCollision"));
 	//BackRightLegCollision->SetupAttachment(GetMesh(), FName("back_right_leg"));
 	//BackRightLegCollision->SetCapsuleSize(6.f, 12.f);
 	//BackRightLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 	//BackRightLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	// ‰¼‚ÌŒ©‚½–ÚiƒGƒ“ƒWƒ““à‚ÌSphere‚ğg‚¤j
+	// ä»®ã®è¦‹ãŸç›®ï¼ˆã‚¨ãƒ³ã‚¸ãƒ³å†…ã®Sphereã‚’ä½¿ã†ï¼‰
 	USkeletalMeshComponent* CharacterMesh = GetMesh();
 
 	//Mesh---------------------------------------------------
 	UStaticMesh* DogMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/model/newdog.newdog"));
 	if (DogMesh)
 	{
-		// V‚µ‚¢ƒƒbƒVƒ…ƒRƒ“ƒ|[ƒlƒ“ƒg‚ğì¬
+		// æ–°ã—ã„ãƒ¡ãƒƒã‚·ãƒ¥ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã‚’ä½œæˆ
 		UStaticMeshComponent* VisualMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisualMesh"));
 		VisualMesh->SetStaticMesh(DogMesh);
 
-		// ƒ‹[ƒgiCapsuleComponentj‚ÉƒAƒ^ƒbƒ`
+		// ãƒ«ãƒ¼ãƒˆï¼ˆCapsuleComponentï¼‰ã«ã‚¢ã‚¿ãƒƒãƒ
 		VisualMesh->SetupAttachment(GetCapsuleComponent());
-		//‘å‚«‚³•ÏX
+		//å¤§ãã•å¤‰æ›´
 		VisualMesh->SetRelativeScale3D(FVector(MeshScale));
-		// Œü‚«EˆÊ’u’²®iƒ‚ƒfƒ‹‚É‡‚í‚¹‚Ä’²®OKj
+		// å‘ããƒ»ä½ç½®èª¿æ•´ï¼ˆãƒ¢ãƒ‡ãƒ«ã«åˆã‚ã›ã¦èª¿æ•´OKï¼‰
 		VisualMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -AngleCon));
 		VisualMesh->SetRelativeRotation(FRotator(0.0f, AngleCon, 0.0f));
 
-		// Õ“Ë‚ÍƒJƒvƒZƒ‹‚Åˆµ‚¤‚½‚ßAStaticMesh‘¤‚Í–³Œø‚É
+		// è¡çªã¯ã‚«ãƒ—ã‚»ãƒ«ã§æ‰±ã†ãŸã‚ã€StaticMeshå´ã¯ç„¡åŠ¹ã«
 		VisualMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-		// ’Ç‰ÁFƒƒbƒVƒ…‚Å•¨—ƒVƒ~ƒ…ƒŒ[ƒg‚ªON‚É‚È‚Á‚Ä‚¢‚È‚¢‚±‚Æ‚ğ•ÛØ
+		// è¿½åŠ ï¼šãƒ¡ãƒƒã‚·ãƒ¥ã§ç‰©ç†ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ãƒˆãŒONã«ãªã£ã¦ã„ãªã„ã“ã¨ã‚’ä¿è¨¼
 		VisualMesh->SetSimulatePhysics(false);
 	}
 	/*else
@@ -92,12 +92,12 @@ ADog::ADog()
 		UE_LOG(LogTemp, Error, TEXT("Failed to load StaticMesh: /Game/model/newdog.newdog"));
 	}*/
 	
-	// Material‚ğStaticMesh‚Éİ’è‚·‚é
+	// Materialã‚’StaticMeshã«è¨­å®šã™ã‚‹
 	UCapsuleComponent* Capsule = GetCapsuleComponent();
 	Capsule->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	Capsule->SetCollisionObjectType(ECC_Pawn);
 
-	// ‘S•”–³‹‚Å‚Í‚È‚­A•K—v‚È‚à‚Ì‚ğŒÂ•Ê‚Éİ’è
+	// å…¨éƒ¨ç„¡è¦–ã§ã¯ãªãã€å¿…è¦ãªã‚‚ã®ã‚’å€‹åˆ¥ã«è¨­å®š
 	Capsule->SetCollisionResponseToAllChannels(ECR_Block);
 	Capsule->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	Capsule->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
@@ -105,69 +105,69 @@ ADog::ADog()
 
 	Capsule->SetGenerateOverlapEvents(true);
 
-	//ƒXƒvƒŠƒ“ƒOƒA[ƒ€--------------------------------------------------------
+	//ã‚¹ãƒ—ãƒªãƒ³ã‚°ã‚¢ãƒ¼ãƒ --------------------------------------------------------
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
 
-	// ‹——£iƒJƒƒ‰‚ªŒ¢‚ÌŒã‚ë‚É‚Ç‚ê‚­‚ç‚¢—£‚ê‚é‚©j
+	// è·é›¢ï¼ˆã‚«ãƒ¡ãƒ©ãŒçŠ¬ã®å¾Œã‚ã«ã©ã‚Œãã‚‰ã„é›¢ã‚Œã‚‹ã‹ï¼‰
 	SpringArm->TargetArmLength = 600.0f;  // 
 
-	// ƒJƒƒ‰‚ÌŠp“x‚ğ­‚µ‰º‚ÉŒü‚¯‚é
+	// ã‚«ãƒ¡ãƒ©ã®è§’åº¦ã‚’å°‘ã—ä¸‹ã«å‘ã‘ã‚‹
 	SpringArm->SetRelativeRotation(FRotator(-20.0f, 0.0f, 0.0f));
-	// ƒvƒŒƒCƒ„[‚Ìƒ}ƒEƒX‘€ì‚ÅƒJƒƒ‰‚ª‰ñ‚ç‚È‚¢‚æ‚¤‚É‚·‚é
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒã‚¦ã‚¹æ“ä½œã§ã‚«ãƒ¡ãƒ©ãŒå›ã‚‰ãªã„ã‚ˆã†ã«ã™ã‚‹
 	SpringArm->bUsePawnControlRotation = false;
 
-	// ƒJƒƒ‰‚Ìƒ‰ƒO‚ÅƒXƒ€[ƒY‚É’Ç]
+	// ã‚«ãƒ¡ãƒ©ã®ãƒ©ã‚°ã§ã‚¹ãƒ ãƒ¼ã‚ºã«è¿½å¾“
 	SpringArm->bEnableCameraLag = true;
 	SpringArm->CameraLagSpeed = 5.0f;
 
-	//ƒJƒƒ‰--------------------------------------------------------------------
-	// ƒJƒƒ‰‚ÌƒZƒbƒgƒAƒbƒv
+	//ã‚«ãƒ¡ãƒ©--------------------------------------------------------------------
+	// ã‚«ãƒ¡ãƒ©ã®ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 
-	// ƒJƒƒ‰‚ÍPawn‚Ì‰ñ“]‚ğg‚í‚È‚¢iŒÅ’èŒã•û‹“_j
+	// ã‚«ãƒ¡ãƒ©ã¯Pawnã®å›è»¢ã‚’ä½¿ã‚ãªã„ï¼ˆå›ºå®šå¾Œæ–¹è¦–ç‚¹ï¼‰
 	Camera->bUsePawnControlRotation = false;
 
-	//“ü—Í----------------------------------------------------------------------
-    //InputMapping‚Ì“Ç‚İ‚İ
+	//å…¥åŠ›----------------------------------------------------------------------
+    //InputMappingã®èª­ã¿è¾¼ã¿
 	DefaultMappingContext = LoadObject<UInputMappingContext>(nullptr, TEXT("/Game/input/InputMappingContext1"));
 
 	LookAction = LoadObject<UInputAction>(nullptr, TEXT("/Game/input/IA_Look"));
 
-	//”­ËˆÊ’u
+	//ç™ºå°„ä½ç½®
 	MuzzlePoint = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzlePoint"));
 	MuzzlePoint->SetupAttachment(RootComponent);
-	//‚‚³’²®
+	//é«˜ã•èª¿æ•´
 	MuzzlePoint->SetRelativeLocation(FVector(100.f, 0.f, 0.f));
 
-    //AttackƒAƒNƒVƒ‡ƒ“‚Ì“Ç‚İ‚İ
+    //Attackã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®èª­ã¿è¾¼ã¿
 	AttackAction = LoadObject<UInputAction>(nullptr, TEXT("/Game/input/IA_Attack"));
 
-	//JumpƒAƒNƒVƒ‡ƒ““Ç‚İ‚İ
+	//Jumpã‚¢ã‚¯ã‚·ãƒ§ãƒ³èª­ã¿è¾¼ã¿
 	JumpAction = LoadObject<UInputAction>(nullptr, TEXT("/Game/input/IA_Jump"));
 
-    //ClickƒAƒNƒVƒ‡ƒ““Ç‚İ‚İ
+    //Clickã‚¢ã‚¯ã‚·ãƒ§ãƒ³èª­ã¿è¾¼ã¿
 	ClickAction = LoadObject<UInputAction>(nullptr, TEXT("/Game/input/IA_Click"));
 
-	//SwitchƒAƒNƒVƒ‡ƒ““Ç‚İ‚İ
+	//Switchã‚¢ã‚¯ã‚·ãƒ§ãƒ³èª­ã¿è¾¼ã¿
 	SwitchAction = LoadObject<UInputAction>(nullptr, TEXT("/Game/input/IA_Switch"));
 
-	//StanderdƒAƒNƒVƒ‡ƒ““Ç‚İ‚İ
+	//Standerdã‚¢ã‚¯ã‚·ãƒ§ãƒ³èª­ã¿è¾¼ã¿
 	StanderdAction = LoadObject<UInputAction>(nullptr, TEXT("/Game/input/IA_Standerd"));
 
-	// CharacterMovementComponent ‚ÉƒWƒƒƒ“ƒv—Í‚ğİ’è
+	// CharacterMovementComponent ã«ã‚¸ãƒ£ãƒ³ãƒ—åŠ›ã‚’è¨­å®š
 	GetCharacterMovement()->JumpZVelocity = JumpForce;
 
-	//ƒXƒ|ƒbƒgƒ‰ƒCƒg--------------------------------------------------------------------
+	//ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆ--------------------------------------------------------------------
 	SpotLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLight"));
-	SpotLight->SetupAttachment(RootComponent);//capsule‚É’Ç]
+	SpotLight->SetupAttachment(RootComponent);//capsuleã«è¿½å¾“
 	SpotLight->SetRelativeLocation(SpotLightPos);
 	SpotLight->SetRelativeRotation(SpotLightRot);
-	SpotLight->Intensity = 5000.0f;//‹­“x
+	SpotLight->Intensity = 5000.0f;//å¼·åº¦
 	SpotLight->AttenuationRadius = 800.0f;
-	SpotLight->InnerConeAngle = 25.0f;//“à‘¤‚ÌŠp“x
-	SpotLight->OuterConeAngle = 50.0f;//ŠO‘¤‚ÌŠp“x
+	SpotLight->InnerConeAngle = 25.0f;//å†…å´ã®è§’åº¦
+	SpotLight->OuterConeAngle = 50.0f;//å¤–å´ã®è§’åº¦
 	SpotLight->SetMobility(EComponentMobility::Movable);
 	SpotLight->SetVisibility(true);
 }
@@ -176,7 +176,7 @@ ADog::ADog()
 void ADog::BeginPlay()
 {
 	Super::BeginPlay();
-	//ƒCƒ“ƒbƒvƒgƒ}ƒbƒsƒ“ƒO‚Ì’Ç‰Á
+	//ã‚¤ãƒ³ãƒƒãƒ—ãƒˆãƒãƒƒãƒ”ãƒ³ã‚°ã®è¿½åŠ 
 	if (const APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -185,14 +185,14 @@ void ADog::BeginPlay()
 		}
 	}
 
-	//ƒ}ƒEƒXƒJ[ƒ\ƒ‹‚Ì—LŒø‰»
+	//ãƒã‚¦ã‚¹ã‚«ãƒ¼ã‚½ãƒ«ã®æœ‰åŠ¹åŒ–
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
 	{
 		PC->bShowMouseCursor = true;
 		PC->SetInputMode(FInputModeGameAndUI());
 	}
 
-	//HP‚Ì‰Šú‰»
+	//HPã®åˆæœŸåŒ–
 	Health = MaxHealth;
 }
 
@@ -201,26 +201,26 @@ void ADog::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//’n–Ê‚É‚Â‚¢‚½‚çJumpSECheck‚ğfalse‚É‚·‚é
+	//åœ°é¢ã«ã¤ã„ãŸã‚‰JumpSECheckã‚’falseã«ã™ã‚‹
     if (GetCharacterMovement()->IsMovingOnGround())
 	{
 		JumpSECheck = false;
 	}
 
-	//“’…”»’è
+	//åˆ°ç€åˆ¤å®š
 	if (CurrentMoveMarker)
 	{
 		float dis = FVector::Dist(GetActorLocation(), MoveTargetLoc);
 
 		if (dis < GoalLocRange)
 		{
-			//ƒ}[ƒJ[‚ğÁ‚·
+			//ãƒãƒ¼ã‚«ãƒ¼ã‚’æ¶ˆã™
 			CurrentMoveMarker->Destroy();
 			CurrentMoveMarker = nullptr;
 		}
 	}
 
-	//Ä¶‚³‚ê‚Ä‚¢level‚Ìæ“¾
+	//å†ç”Ÿã•ã‚Œã¦ã„levelã®å–å¾—
 	StageName = UGameplayStatics::GetCurrentLevelName(GetWorld(), true);
 }
 
@@ -232,25 +232,25 @@ void ADog::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		// ControlBall‚ÆIA_Look‚ÌTriggered‚ğBind‚·‚é
+		// ControlBallã¨IA_Lookã®Triggeredã‚’Bindã™ã‚‹
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ADog::Look);
-		// ControlBall‚ÆIA_Attack‚ÌTriggered‚ğBind‚·‚é
+		// ControlBallã¨IA_Attackã®Triggeredã‚’Bindã™ã‚‹
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &ADog::Attack);
-		// ControlBall‚ÆIA_Standerd‚ÌTriggered‚ğBind‚·‚é
+		// ControlBallã¨IA_Standerdã®Triggeredã‚’Bindã™ã‚‹
 		EnhancedInputComponent->BindAction(StanderdAction, ETriggerEvent::Triggered, this, &ADog::LockOn);
-		// ControlBall‚ÆIA_Jump‚ÌTriggered‚ğBind‚·‚é
+		// ControlBallã¨IA_Jumpã®Triggeredã‚’Bindã™ã‚‹
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ADog::Jump);
-		//Contro;Ball‚ÆIA_Click‚ÌTriggered‚ğBind‚·‚é
+		//Contro;Ballã¨IA_Clickã®Triggeredã‚’Bindã™ã‚‹
 		EnhancedInputComponent->BindAction(ClickAction, ETriggerEvent::Triggered, this, &ADog::MoveToMousePoint);
-		//Contro;Ball‚ÆIA_Switch‚ÌTriggered‚ğBind‚·‚é
-		EnhancedInputComponent->BindAction(SwitchAction, ETriggerEvent::Triggered, this, &ADog::Switch);
+		//Contro;Ballã¨IA_Switchã®Triggeredã‚’Bindã™ã‚‹
+		EnhancedInputComponent->BindAction(SwitchAction, ETriggerEvent::Started, this, &ADog::Switch);
 	}
 }
 
-//‹“_‘€ì‚Ìˆ—ŠÖ”
+//è¦–ç‚¹æ“ä½œã®å‡¦ç†é–¢æ•°
 void ADog::Look(const FInputActionValue& Value)
 {
-	// input‚ÌValue‚ÍVector2D‚É•ÏŠ·
+	// inputã®Valueã¯Vector2Dã«å¤‰æ›
 	FVector2D v = Value.Get<FVector2D>();
 
 	if (Controller != nullptr)
@@ -259,26 +259,26 @@ void ADog::Look(const FInputActionValue& Value)
 		AddControllerYawInput(v.X);
 		AddControllerPitchInput(v.Y);
 
-		//Dog‚ª‚Á‚Ä‚¢‚éControl‚ÌŠp“x‚ğæ“¾
+		//DogãŒæŒã£ã¦ã„ã‚‹Controlã®è§’åº¦ã‚’å–å¾—
 		FRotator controlRotate = GetControlRotation();
 
-		//Ä¶‚³‚ê‚Ä‚¢‚éƒŒƒxƒ‹‚Ìæ“¾
+		//å†ç”Ÿã•ã‚Œã¦ã„ã‚‹ãƒ¬ãƒ™ãƒ«ã®å–å¾—
 		FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld(), true);
 
 		if (LevelName == "stage1" || LevelName == "stage2" || LevelName == "stage3")
 		{
-			// PlayerController‚ÌŠp“x‚ğİ’è‚·‚é
+			// PlayerControllerã®è§’åº¦ã‚’è¨­å®šã™ã‚‹
 			UGameplayStatics::GetPlayerController(this, 0)->SetControlRotation(FRotator(-controlRotate.Pitch, controlRotate.Yaw, 0.0f));
 		}
 		else
 		{
-			// PlayerController‚ÌŠp“x‚ğİ’è‚·‚é
+			// PlayerControllerã®è§’åº¦ã‚’è¨­å®šã™ã‚‹
 			UGameplayStatics::GetPlayerController(this, 0)->SetControlRotation(FRotator(controlRotate.Pitch, controlRotate.Yaw, 0.0f));
 		}
 	}
 }
 
-//UŒ‚‘€ì‚Ìˆ—ŠÖ”
+//æ”»æ’ƒæ“ä½œã®å‡¦ç†é–¢æ•°
 void ADog::Attack(const FInputActionValue& Value)
 {
 	if (IsChangeAttack)
@@ -289,42 +289,43 @@ void ADog::Attack(const FInputActionValue& Value)
 		{
 			GM->Score -= ShootScore;
 			
-			//ƒXƒRƒA‚ª0ˆÈ‰º‚É‚È‚Á‚½‚ç0‚É‚·‚é
+			//ã‚¹ã‚³ã‚¢ãŒ0ä»¥ä¸‹ã«ãªã£ãŸã‚‰0ã«ã™ã‚‹
 			if (GM->Score < 0)
 			{
 				GM->Score = 0;
-				//UI’Ê’m
+				//UIé€šçŸ¥
 				GM->OnScoreChanged.Broadcast();
 				UE_LOG(LogTemp, Warning, TEXT("NoGM"));
 			}
 		}
-		//UI’Ê’m
+		//UIé€šçŸ¥
 		GM->OnScoreChanged.Broadcast();
 		
-		// ƒJƒƒ‰æ“¾
+		// ã‚«ãƒ¡ãƒ©å–å¾—
 		APlayerController* PC = Cast<APlayerController>(GetController());
 		if (!PC) return;
 
-		// eŒûˆÊ’u‚ÆŒü‚«‚ğæ“¾
+		// éŠƒå£ä½ç½®ã¨å‘ãã‚’å–å¾—
 		FVector MuzzleLoc = MuzzlePoint->GetComponentLocation();
 		FRotator MuzzleRot = MuzzlePoint->GetComponentRotation();
 
-		// ’e‚Ìis•ûŒüieŒû‚ÌForwardƒxƒNƒgƒ‹j
+		// å¼¾ã®é€²è¡Œæ–¹å‘ï¼ˆéŠƒå£ã®Forwardãƒ™ã‚¯ãƒˆãƒ«ï¼‰
 		FVector ShootDir = MuzzlePoint->GetForwardVector();
 
-		// ’e¶¬
+		// å¼¾ç”Ÿæˆ
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 		ABallActor* Ball = GetWorld()->SpawnActor<ABallActor>(BallActorClass, MuzzleLoc, MuzzleRot, SpawnParams);
 
+		OnSayDialogue.Broadcast(FText::FromString(TEXT("æ’ƒã¦")));
 
 			if (Ball)
 			{
-				// ”­Ë•ûŒü‚ğ“n‚·
+				// ç™ºå°„æ–¹å‘ã‚’æ¸¡ã™
 				Ball->InitVelocity(ShootDir);
 				Ball->SetOwner(this);
-				//”­ËSE
+				//ç™ºå°„SE
 				if (SoundToPlayShot)
 				{
 					UGameplayStatics::PlaySoundAtLocation(this, SoundToPlayShot, GetActorLocation());
@@ -342,16 +343,16 @@ void ADog::LockOn(const FInputActionValue& Value)
 
 
 
-//ƒWƒƒƒ“ƒv‘€ì‚Ìˆ—ŠÖ”
+//ã‚¸ãƒ£ãƒ³ãƒ—æ“ä½œã®å‡¦ç†é–¢æ•°
 void ADog::Jump(const FInputActionValue& Value)
 {
 	if (Value.Get<bool>())
 	{
-		//ƒWƒƒƒ“ƒv
+		//ã‚¸ãƒ£ãƒ³ãƒ—
 		ACharacter::Jump();
 
-		OnSayDialogue.Broadcast(FText::FromString(TEXT("ƒWƒƒƒ“ƒv‚¾")));
-		//ƒWƒƒƒ“ƒvSE
+		OnSayDialogue.Broadcast(FText::FromString(TEXT("ã‚¸ãƒ£ãƒ³ãƒ—ã ")));
+		//ã‚¸ãƒ£ãƒ³ãƒ—SE
 		if (SoundToPlayJump && !JumpSECheck)
 		{
 
@@ -362,7 +363,7 @@ void ADog::Jump(const FInputActionValue& Value)
 	
 }
 
-//ƒNƒŠƒbƒN‚µ‚½‚ç“®‚©‚·ŠÖ”
+//ã‚¯ãƒªãƒƒã‚¯ã—ãŸã‚‰å‹•ã‹ã™é–¢æ•°
 void ADog::MoveToMousePoint(const FInputActionValue& Value)
 {
 	if (!IsChangeAttack)
@@ -380,38 +381,38 @@ void ADog::MoveToMousePoint(const FInputActionValue& Value)
 		{
 			MoveTargetLoc = Hit.ImpactPoint;
 
-			//Šù‘¶ƒ}[ƒJ[‚Ìíœ
+			//æ—¢å­˜ãƒãƒ¼ã‚«ãƒ¼ã®å‰Šé™¤
 			if (CurrentMoveMarker)
 			{
 				CurrentMoveMarker->Destroy();
 				CurrentMoveMarker = nullptr;
 			}
 
-			//ƒ}[ƒJ[‚Ìì¬
+			//ãƒãƒ¼ã‚«ãƒ¼ã®ä½œæˆ
 			if (MoveGoalPointClass)
 			{
 				CurrentMoveMarker = GetWorld()->SpawnActor<AActor>
 					(MoveGoalPointClass, MoveTargetLoc, FRotator::ZeroRotator);
 			}
 			 
-			OnSayDialogue.Broadcast(FText::FromString(TEXT("‚ ‚»‚±‚ÉˆÚ“®‚¾")));
+			OnSayDialogue.Broadcast(FText::FromString(TEXT("ã‚ãã“ã«ç§»å‹•ã ")));
 
-			//NavMeshã‚ğˆÚ“®
+			//NavMeshä¸Šã‚’ç§»å‹•
 			UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), MoveTargetLoc);
 
 		}
 	}
 }
 
-//ƒ‚[ƒh‚ÌØ‚è‘Ö‚¦ŠÖ”
+//ãƒ¢ãƒ¼ãƒ‰ã®åˆ‡ã‚Šæ›¿ãˆé–¢æ•°
 void ADog::Switch(const FInputActionValue& Value)
 {
 	if (!IsChangeAttack)
 	{
 		IsChangeAttack = true;
-		OnSayDialogue.Broadcast(FText::FromString(TEXT("UŒ‚‚¾")));
+		OnSayDialogue.Broadcast(FText::FromString(TEXT("æ”»æ’ƒã ")));
 
-		//Ø‚è‘Ö‚¦SE
+		//åˆ‡ã‚Šæ›¿ãˆSE
 		if (SoundToPlayChenge)
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, SoundToPlayChenge, GetActorLocation());
@@ -420,9 +421,9 @@ void ADog::Switch(const FInputActionValue& Value)
 	else
 	{
 		IsChangeAttack = false;
-		OnSayDialogue.Broadcast(FText::FromString(TEXT("ˆÚ“®‚¾")));
+		OnSayDialogue.Broadcast(FText::FromString(TEXT("ç§»å‹•ã ")));
 
-		//Ø‚è‘Ö‚¦SE
+		//åˆ‡ã‚Šæ›¿ãˆSE
 		if (SoundToPlayChenge)
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, SoundToPlayChenge, GetActorLocation());
@@ -430,7 +431,7 @@ void ADog::Switch(const FInputActionValue& Value)
 	}
 }
 
-//ƒQ[ƒ€ƒI[ƒo[ŠÖ”
+//ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼é–¢æ•°
 void ADog::GameOver()
 {
 	UE_LOG(LogTemp, Warning, TEXT("ShowGameOver() called"));
@@ -464,14 +465,14 @@ void ADog::GameOver()
 	}
 
 
-	//“ü—Í‚Ì–³Œø
+	//å…¥åŠ›ã®ç„¡åŠ¹
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
 	{
 		PC->DisableInput(PC);
 	}
 
 
-	//ƒQ[ƒ€ƒI[ƒo[UI‚ğ•\¦
+	//ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼UIã‚’è¡¨ç¤º
 	TSubclassOf<UUserWidget> GameOverWidgetClass = LoadClass<UUserWidget>
 		(nullptr, TEXT("/Game/UI/GameOver_UI.GameOver_UI_C"));
 	if (GameOverWidgetClass)
@@ -483,7 +484,7 @@ void ADog::GameOver()
 		}
 	}
 
-	//BGMÄ¶
+	//BGMå†ç”Ÿ
 	AMyBGM* bgmActor = Cast<AMyBGM>(UGameplayStatics::GetActorOfClass(GetWorld(), AMyBGM::StaticClass()));
 
 	if (bgmActor)
@@ -495,23 +496,23 @@ void ADog::GameOver()
 		UE_LOG(LogTemp, Error, TEXT("AMyBGM Not Found in level!"));
 	}
 
-	//ƒQ[ƒ€‚ÌŠÔ‚ğ~‚ß‚é
+	//ã‚²ãƒ¼ãƒ ã®æ™‚é–“ã‚’æ­¢ã‚ã‚‹
 	UGameplayStatics::SetGamePaused(GetWorld(), true);
 }
 
-//“_–ÅŠJn‚Æƒ_ƒ[ƒWˆ—ŠÖ”
+//ç‚¹æ»…é–‹å§‹ã¨ãƒ€ãƒ¡ãƒ¼ã‚¸å‡¦ç†é–¢æ•°
 void ADog::StartBlinkAndTakeDamege(float damege)
 {
-	//–³“G’†‚Í–³‹
+	//ç„¡æ•µä¸­ã¯ç„¡è¦–
 	if (bIsInvincible)
 		return;
 
 	bIsInvincible = true;
 
-	//ƒ_ƒ[ƒW
+	//ãƒ€ãƒ¡ãƒ¼ã‚¸
 	Health -= damege;
 
-	//”í’eSE
+	//è¢«å¼¾SE
 	if (SoundToPlayHitByEnemy)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, SoundToPlayHitByEnemy, GetActorLocation());
@@ -522,23 +523,23 @@ void ADog::StartBlinkAndTakeDamege(float damege)
 		Health = 0;
 	}
 
-	//UI‚Ö’Ê’m
+	//UIã¸é€šçŸ¥
 	OnHealthChanged.Broadcast();
 
-	//ƒQ[ƒ€ƒI[ƒo[ˆ—
+	//ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼å‡¦ç†
 	if (Health <= 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("GAME OVER"));
 		GameOver();
 	}
 
-	//“|‚ê‚Ä‚é“r’†‚È‚ç‚Î–³‹
+	//å€’ã‚Œã¦ã‚‹é€”ä¸­ãªã‚‰ã°ç„¡è¦–
 	GetWorldTimerManager().ClearAllTimersForObject(this);
 
 	BlinkCount = 0;
 	bIsVisible = true;
 
-	//0.1•b‚²‚Æ‚É“_–Å
+	//0.1ç§’ã”ã¨ã«ç‚¹æ»…
 	GetWorldTimerManager().SetTimer
 	(
 		BlinkTimerHandle,
@@ -549,7 +550,7 @@ void ADog::StartBlinkAndTakeDamege(float damege)
 	);
 }
 
-//“_–Å
+//ç‚¹æ»…
 void ADog::Blink()
 {
 	bIsVisible = !bIsVisible;
@@ -560,10 +561,11 @@ void ADog::Blink()
 	if (BlinkCount >= MaxBlinkCount)
 	{
 		GetWorldTimerManager().ClearTimer(BlinkTimerHandle);
+		bIsInvincible = false;
 	}
 }
 
-////–³“Gˆ—ŠÖ”
+////ç„¡æ•µå‡¦ç†é–¢æ•°
 //void ADog::EndInvicnble()
 //{
 //	bIsInvincible = false;

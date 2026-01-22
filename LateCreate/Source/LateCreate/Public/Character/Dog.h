@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -9,7 +9,7 @@
 #include <Components/SpotLightComponent.h>
 #include "Dog.generated.h"
 
-//ƒNƒ‰ƒX‚ÌéŒ¾
+//ã‚¯ãƒ©ã‚¹ã®å®£è¨€
 class UStaticMeshCOmponent;
 class USpringArmComponent;
 class UCameraComponent;
@@ -38,45 +38,45 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	//“_–ÅŠJnŠÖ”
+	//ç‚¹æ»…é–‹å§‹é–¢æ•°
 	UFUNCTION()
 	void StartBlinkAndTakeDamege(float damege);
-	//“_–Åˆ—ŠÖ”
+	//ç‚¹æ»…å‡¦ç†é–¢æ•°
 	void Blink();
 
 private:
-	//ålŒö‚ÌƒƒbƒVƒ… ƒJƒvƒZƒ‹
+	//ä¸»äººå…¬ã®ãƒ¡ãƒƒã‚·ãƒ¥ ã‚«ãƒ—ã‚»ãƒ«
 	UPROPERTY(VisibleAnywhere, Category = Character, meta = (AllowPrivaetAccess = "true"))
 	TObjectPtr<UStaticMeshComponent> Sphere;
 
-	//ƒJƒƒ‰”z’u‚ÌƒXƒvƒŠƒ“ƒOƒA[ƒ€
+	//ã‚«ãƒ¡ãƒ©é…ç½®ã®ã‚¹ãƒ—ãƒªãƒ³ã‚°ã‚¢ãƒ¼ãƒ 
 	UPROPERTY(VisibleAnywhere, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USpringArmComponent> SpringArm;
 
-	//ƒJƒƒ‰
+	//ã‚«ãƒ¡ãƒ©
 	UPROPERTY(VisibleAnywhere, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> Camera;
 
 	
 
-	//ƒXƒvƒŠƒ“ƒOƒA[ƒ€‚ÌŠp“x•Ï”
+	//ã‚¹ãƒ—ãƒªãƒ³ã‚°ã‚¢ãƒ¼ãƒ ã®è§’åº¦å¤‰æ•°
 	float RollArm = 0.0f, PitchArm = -30.0f, YawArm = 0.0f;
 
-	//ƒXƒvƒŠƒ“ƒOƒA[ƒ€‚Ì’·‚³’²®•Ï”
+	//ã‚¹ãƒ—ãƒªãƒ³ã‚°ã‚¢ãƒ¼ãƒ ã®é•·ã•èª¿æ•´å¤‰æ•°
 	float ArmLength = 450.0f;
 
 protected:
-	//‹“_‘€ì
+	//è¦–ç‚¹æ“ä½œ
 	void Look(const FInputActionValue& Value);
-	//UŒ‚
+	//æ”»æ’ƒ
 	void Attack(const FInputActionValue& Value);
-	//•W€
+	//æ¨™æº–
 	void LockOn(const FInputActionValue& Value);
-	//ƒWƒƒƒ“ƒv
+	//ã‚¸ãƒ£ãƒ³ãƒ—
 	void Jump(const FInputActionValue& Value);
-	//Ø‚è‘Ö‚¦
+	//åˆ‡ã‚Šæ›¿ãˆ
 	void Switch(const FInputActionValue& Value);
-	//ƒ}ƒEƒXˆÚ“®
+	//ãƒã‚¦ã‚¹ç§»å‹•
 	void MoveToMousePoint(const FInputActionValue& Value);
 private:
 
@@ -109,19 +109,19 @@ public:
 	UPROPERTY(EditAnywhere, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
-	//ƒXƒ|ƒbƒgƒ‰ƒCƒg‚ğƒRƒ“ƒ|[ƒlƒ“ƒg
+	//ã‚¹ãƒãƒƒãƒˆãƒ©ã‚¤ãƒˆã‚’ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
 	UPROPERTY(VisibleAnywhere, Category = "Light")
 	USpotLightComponent* SpotLight;
 private:
-	//’eŠÛ‚ÌƒNƒ‰ƒX
+	//å¼¾ä¸¸ã®ã‚¯ãƒ©ã‚¹
 	UPROPERTY(EditDefaultsOnly,Category = "Attack")
 	TSubclassOf<class ABallActor> BallActorClass;
 
-	//”­Ëƒ|ƒCƒ“ƒg
+	//ç™ºå°„ãƒã‚¤ãƒ³ãƒˆ
 	UPROPERTY(VisibleAnywhere,Category = "Componets")
 	USceneComponent* MuzzlePoint;
 
-	//ˆÚ“®–Ú•WƒNƒ‰ƒX
+	//ç§»å‹•ç›®æ¨™ã‚¯ãƒ©ã‚¹
     UPROPERTY(EditDefaultsOnly,Category = "Move")
 	TSubclassOf<AActor> MoveGoalPointClass;
 
@@ -129,64 +129,64 @@ private:
 	AActor* CurrentMoveMarker;
 
 
-//•Ï”éŒ¾
+//å¤‰æ•°å®£è¨€
 private:
-	//ƒXƒ|[ƒ“ˆÊ’u’²®
+	//ã‚¹ãƒãƒ¼ãƒ³ä½ç½®èª¿æ•´
 	float Spawnlocation = 200.0f;
 
-     //ƒWƒƒƒ“ƒv‚ª‚Å‚«‚é‚©”»’è
+     //ã‚¸ãƒ£ãƒ³ãƒ—ãŒã§ãã‚‹ã‹åˆ¤å®š
 	bool CanJump = false;
 
-	//UŒ‚AˆÚ“®Ø‚è‘Ö‚¦
-	bool IsChangeAttack = false;//false‚È‚ç‚ÎˆÚ“®ƒ‚[ƒh
+	//æ”»æ’ƒã€ç§»å‹•åˆ‡ã‚Šæ›¿ãˆ
+	bool IsChangeAttack = false;//falseãªã‚‰ã°ç§»å‹•ãƒ¢ãƒ¼ãƒ‰
 
 	FVector WorldLocation;
 	FVector WorldDirection;
 
-	//mesh‚Ì‘å‚«‚³•â³
+	//meshã®å¤§ãã•è£œæ­£
 	float MeshScale = 0.3f;
 
-	//Šp“x•â³
+	//è§’åº¦è£œæ­£
 	float AngleCon = 90.0f;
 
-	//‘¬“x
+	//é€Ÿåº¦
 	float Speed = 300.0f;
 
-	//‘Ì—Í
+	//ä½“åŠ›
 	float Health = 100.0f;
 
-	//Å‘å‘Ì—Í
+	//æœ€å¤§ä½“åŠ›
 	float MaxHealth = 100.0f;
 
-	//ƒWƒƒƒ“ƒvSE§Œä•Ï”
+	//ã‚¸ãƒ£ãƒ³ãƒ—SEåˆ¶å¾¡å¤‰æ•°
 	float JumpSECheck = false;
 
-	//ƒXƒe[ƒW‚Ìæ“¾
+	//ã‚¹ãƒ†ãƒ¼ã‚¸ã®å–å¾—
 	FString StageName;
-	//ƒ‰ƒCƒg‚ÌˆÊ’u•â³
+	//ãƒ©ã‚¤ãƒˆã®ä½ç½®è£œæ­£
 	const FVector SpotLightPos = { 0.f,0.f,200.0f };
 	const FRotator SpotLightRot = { -75.0f,0.f,0.f };
 
-	//ˆÚ“®–Ú•W’n“_
+	//ç§»å‹•ç›®æ¨™åœ°ç‚¹
 	FVector MoveTargetLoc;
 
-	//“’…–Ú•W”»’è‚Ì‹——£
+	//åˆ°ç€ç›®æ¨™åˆ¤å®šã®è·é›¢
 	UPROPERTY(EditAnywhere,Category = "Move")
 	float GoalLocRange = 250.0f;
 
-	//“G‚Ì’eƒqƒbƒgŠÖ˜A‚Ì•Ï”
+	//æ•µã®å¼¾ãƒ’ãƒƒãƒˆæ™‚é–¢é€£ã®å¤‰æ•°
 	FTimerHandle BlinkTimerHandle;
 
 	bool bIsVisible = true;
 	bool bIsInvincible = false;
 
 	int BlinkCount = 0;
-	const int MaxBlinkCount = 6;//3‰ñ“_–Å
+	const int MaxBlinkCount = 6;//3å›ç‚¹æ»…
 
 	float BlinkInterval = 0.1f;
 
-	//ŠÖ”éŒ¾
-	//ƒQ[ƒ€ƒI[ƒo[ŠÖ”
+	//é–¢æ•°å®£è¨€
+	//ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼é–¢æ•°
 	void GameOver();
 
 
@@ -204,28 +204,28 @@ private:
 	USoundBase* SoundToPlayHitByEnemy;
 
 public:
-	// ƒWƒƒƒ“ƒv—Í
+	// ã‚¸ãƒ£ãƒ³ãƒ—åŠ›
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dog|Movement")
 	float JumpForce = 1000.0f;
 
-	//ƒƒbƒNƒIƒ“‚Ì”ÍˆÍ
+	//ãƒ­ãƒƒã‚¯ã‚ªãƒ³ã®ç¯„å›²
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "LockOn")
 	float LockOnRange = 1000.0f;
 
-	// ‘Å‚Á‚½‚ÌƒXƒRƒA	
+	// æ‰“ã£ãŸæ™‚ã®ã‚¹ã‚³ã‚¢	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Score")
 	int32 ShootScore = 10;
 
-	//ƒƒbƒNƒIƒ“ƒAƒNƒ^[
+	//ãƒ­ãƒƒã‚¯ã‚ªãƒ³ã‚¢ã‚¯ã‚¿ãƒ¼
 	UPROPERTY(BlueprintReadOnly, Category = "LockOn")
 	AActor* LockedTarget = nullptr;
 	
-	//ŠÖ”éŒ¾
+	//é–¢æ•°å®£è¨€
     float GetHealth() const { return Health; }
     float GetHealthMax() const { return MaxHealth; }
 
 
-	// ‘Ì—Í•ÏX‚ÌƒCƒxƒ“ƒg
+	// ä½“åŠ›å¤‰æ›´æ™‚ã®ã‚¤ãƒ™ãƒ³ãƒˆ
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHealthChanged);
 	UPROPERTY(BlueprintAssignable, Category = "Event")
 	FOnHealthChanged OnHealthChanged;
@@ -234,7 +234,7 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Event")
 	FOnScoreChanged OnScoreChanged;
     
-	//ƒZƒŠƒt
+	//ã‚»ãƒªãƒ•
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(
 		FOnSayDialogue,
 		const FText&,
@@ -244,8 +244,8 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnSayDialogue OnSayDialogue;
 
-	//ƒNƒ‰ƒXéŒ¾
-// •â•ƒRƒŠƒWƒ‡ƒ“—p‚Ì Capsule
+	//ã‚¯ãƒ©ã‚¹å®£è¨€
+// è£œåŠ©ã‚³ãƒªã‚¸ãƒ§ãƒ³ç”¨ã® Capsule
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collision")
 	class UCapsuleComponent* HeadCollision;
 

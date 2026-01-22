@@ -75,7 +75,7 @@ void AMyGameModeBase::AddScore()
      if (const ABallActor* BulletP = Cast<ABallActor>(UGameplayStatics::GetActorOfClass(GetWorld(),ABallActor::StaticClass())))
 	{
         //’e‚ª“G‚É“–‚½‚é‚ÆƒXƒRƒA‚ð‘‚â‚·
-		Score -= BulletP->HitScore;
+		Score -= BulletP->g_HitScore;
 
         ChangeScore = true;
 	}

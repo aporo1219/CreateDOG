@@ -27,6 +27,21 @@ void AEnemySpawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+    //Ä¶‚³‚ê‚Ä‚¢level‚Ìæ“¾
+    StageName = UGameplayStatics::GetCurrentLevelName(GetWorld(), true);
+
+    if (StageName == "stage1")
+    {
+        MaxEnemyCount = 3;
+    }
+    else if (StageName == "stage2"||StageName == "stage3")
+    {
+        MaxEnemyCount = 4;
+    }
+    else if (StageName == "stage4")
+    {
+        MaxEnemyCount = 5;
+    } 
 }
 
 void AEnemySpawn::SpawnEnemy()

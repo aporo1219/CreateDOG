@@ -40,12 +40,12 @@ public:
 	FOnScoreChanged OnScoreChanged;
 
 private:
-	float I_Speed = 3000.0f;
-	float Max_Speed = 3000.0f;
+	float s_speed = 3000.0f;
+	float s_maxspeed = 3000.0f;
 
 
 public:
-	float HitScore = 100.0f;
+	float g_HitScore = 100.0f;
 
 	
 };

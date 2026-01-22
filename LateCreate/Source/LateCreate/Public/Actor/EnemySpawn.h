@@ -57,4 +57,7 @@ public:
 
 	/** 復活用タイマー */
 	FTimerHandle RespawnTimerHandle;
+
+private:
+	FString StageName;
 };
