@@ -38,7 +38,7 @@ void UScore :: NativeConstruct()
 		// イベントにバインド
 		Dog->OnHealthChanged.AddDynamic(this, &UScore::UpdateHealthText);
 
-		Dog->OnSayDialogue.AddDynamic(this, &UScore::ReceveDialogue);
+		Dog->OnSayDialogue.AddDynamic(this, &UScore::ReceiveDialogue);
 		// 初期表示
 		UpdateHealthText();
 
@@ -162,7 +162,7 @@ void UScore::UpdateTimeText(int32 NewTime)
 }
 
 //セリフを受け取る
-void UScore::ReceveDialogue(FText InDialogueText)
+void UScore::ReceiveDialogue(const FText& InDialogueText)
 {
 	UE_LOG(LogTemp, Warning, TEXT("ReceiveDialogue: %s"), *InDialogueText.ToString());
 

@@ -83,5 +83,5 @@ public:
 	void HideDialogue();
 
 	UFUNCTION()
-	void ReceveDialogue(FText InDialogueText);
+	void ReceiveDialogue(const FText& InDialogueText);
 };

@@ -225,6 +225,13 @@ void AEnemy::TakeDamegeAndDie()
 //リスポーン処理
 void AEnemy::Respawn()
 {
+    //状態リセット
+    bDie = false;
+    bBlinkMidWay = false;
+    bScoreChenge = false;
+    BlinkCount = 0;
+    bIsVisible = true;
+
     // 非表示を解除
     SetActorHiddenInGame(false);
     SetActorEnableCollision(true);
