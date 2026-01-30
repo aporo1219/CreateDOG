@@ -26,4 +26,12 @@ public:
 	//クリックイベント
 	UFUNCTION()
 	void OnStageSelectCliced();
+
+	void OpenStageDelay();
+
+private:
+	FTimerHandle StageOpenTimer;
+	//変数宣言
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundBase* SoundToPlayPushButton;
 };

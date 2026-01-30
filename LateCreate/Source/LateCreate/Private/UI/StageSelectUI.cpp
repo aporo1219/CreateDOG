@@ -12,7 +12,7 @@ void UStageSelectUI::NativeConstruct()
    Super::NativeConstruct();
 
 	//ボタンをまとめる
-	StageButtons = { Stage1Button,Stage2Button,Stage3Button,Stage4Button };
+	StageButtons = { Stage1Button,Stage2Button,Stage3Button };
 
 
 	//ステージ名の設定
@@ -25,8 +25,6 @@ void UStageSelectUI::NativeConstruct()
 		Stage2Button->OnClicked.AddDynamic(this, &UStageSelectUI::OnStage2Clicked);
 	if (Stage3Button)
 		Stage3Button->OnClicked.AddDynamic(this, &UStageSelectUI::OnStage3Clicked);
-	if (Stage4Button)
-		Stage4Button->OnClicked.AddDynamic(this, &UStageSelectUI::OnStage4Clicked);
 
 }
 
@@ -46,11 +44,6 @@ void UStageSelectUI::OnStage3Clicked()
 	OpenStageIndex(2);
 }
 
-void UStageSelectUI::OnStage4Clicked()
-{
-	OpenStageIndex(3);
-}
-
 void UStageSelectUI::OpenStageIndex(int32 Index)
 {
 	
@@ -59,14 +52,30 @@ void UStageSelectUI::OpenStageIndex(int32 Index)
 		return;
 	}
 
-	if (UMyGameInstance* GI = GetGameInstance<UMyGameInstance>())
-	{
-		GI->FadeOpenLevel(FName(StageNames[Index]));
-	}
+	PendingStageIndex = Index;
+
 
 	if (SoundToPlayPushButton)
 	{
 		UGameplayStatics::PlaySound2D(this, SoundToPlayPushButton);
 		UE_LOG(LogTemp, Warning, TEXT("SE play"));
+	}
+
+	// 少し待ってからステージ遷移
+	GetWorld()->GetTimerManager().SetTimer(
+		StageOpenTimer,
+		this,
+		&UStageSelectUI::OpenStageDelay,
+		0.5f, 
+		false
+	);
+
+}
+
+void UStageSelectUI::OpenStageDelay()
+{
+	if (UMyGameInstance* GI = GetGameInstance<UMyGameInstance>())
+	{
+		GI->FadeOpenLevel(FName(StageNames[PendingStageIndex]));
 	}
 }

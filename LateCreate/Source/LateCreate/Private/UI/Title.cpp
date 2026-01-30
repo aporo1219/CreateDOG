@@ -15,5 +15,24 @@ void UTitle::NativeConstruct()
 //クリックされたときの関数
 void UTitle::OnStageSelectCliced()
 {
+	if (SoundToPlayPushButton)
+	{
+		UGameplayStatics::PlaySound2D(this, SoundToPlayPushButton);
+		UE_LOG(LogTemp, Warning, TEXT("SE play"));
+	}
+
+	// 少し待ってからステージ遷移
+	GetWorld()->GetTimerManager().SetTimer(
+		StageOpenTimer,
+		this,
+		&UTitle::OpenStageDelay,
+		0.5f,
+		false
+	);
+}
+
+//ステージを開く
+void UTitle::OpenStageDelay()
+{
 	UGameplayStatics::OpenLevel(GetWorld(), FName("StageSelect"));
 }

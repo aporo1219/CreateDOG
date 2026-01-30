@@ -268,7 +268,7 @@ void ADog::Look(const FInputActionValue& Value)
 		if (LevelName == "stage1" || LevelName == "stage2" || LevelName == "stage3")
 		{
 			// PlayerControllerの角度を設定する
-			UGameplayStatics::GetPlayerController(this, 0)->SetControlRotation(FRotator(-controlRotate.Pitch, controlRotate.Yaw, 0.0f));
+			UGameplayStatics::GetPlayerController(this, 0)->SetControlRotation(FRotator(controlRotate.Pitch, controlRotate.Yaw, 0.0f));
 		}
 		else
 		{

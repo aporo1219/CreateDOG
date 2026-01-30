@@ -26,8 +26,6 @@ public:
 	class UButton* Stage2Button;
 	UPROPERTY(meta = (BindWidget))
 	class UButton* Stage3Button;
-	UPROPERTY(meta = (BindWidget))
-	class UButton* Stage4Button;
 
 
 	//リスト格納用
@@ -48,14 +46,17 @@ private:
 	UFUNCTION()
 	void OnStage3Clicked();
 
-	UFUNCTION()
-	void OnStage4Clicked();
 
 	void OpenStageIndex(int32 Index);
+
+	void OpenStageDelay();
+
+	FTimerHandle StageOpenTimer;
 
 	//遷移予定のステージを一時保存
 	FName PendingStageName;
 
+	int32 PendingStageIndex;
 private:
 	//変数宣言
 	UPROPERTY(EditAnywhere, Category = "Sound")
