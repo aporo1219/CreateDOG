@@ -15,6 +15,12 @@ void UTitle::NativeConstruct()
 //クリックされたときの関数
 void UTitle::OnStageSelectCliced()
 {
+	//BGMを一瞬下げる
+	if (SEDuckSoundMix)
+	{
+		UGameplayStatics::PushSoundMixModifier(this, SEDuckSoundMix);
+	}
+
 	if (SoundToPlayPushButton)
 	{
 		UGameplayStatics::PlaySound2D(this, SoundToPlayPushButton);
@@ -26,7 +32,7 @@ void UTitle::OnStageSelectCliced()
 		StageOpenTimer,
 		this,
 		&UTitle::OpenStageDelay,
-		1.0f,
+		TRANSITION_TIME,
 		false
 	);
 }
@@ -34,5 +40,10 @@ void UTitle::OnStageSelectCliced()
 //ステージを開く
 void UTitle::OpenStageDelay()
 {
+	//音量を下げる
+	if (SEDuckSoundMix)
+	{
+		UGameplayStatics::PopSoundMixModifier(this, SEDuckSoundMix);
+	}
 	UGameplayStatics::OpenLevel(GetWorld(), FName("StageSelect"));
 }

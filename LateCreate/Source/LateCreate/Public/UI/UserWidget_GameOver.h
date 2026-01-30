@@ -31,4 +31,15 @@ protected:
 	//ステージセレクトボタンが押されたとき
 	UFUNCTION()
 	void OnStageSelectCliked();
+
+	void OpenStageDelaySS();
+
+	void OpenStageDelayR();
+private:
+	FTimerHandle StageOpenTimer;
+	//変数宣言
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundBase* SoundToPlayPushButton;
+
+	const float TRANSITION_TIME{ 3.0f };
 };

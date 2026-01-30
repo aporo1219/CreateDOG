@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Sound/SoundBase.h"
 #include "UserWidget_GameClear.generated.h"
 
 /**
@@ -32,4 +33,16 @@ public:
 	virtual void NativeConstruct() override;
 
 	UButton* GetStageSelectButton() { return StageSelectButton; };
+
+	void OpenStageDelaySS();
+
+	void OpenStageDelayR();
+
+private:
+	FTimerHandle StageOpenTimer;
+	//•Ï”éŒ¾
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	USoundBase* SoundToPlayPushButton;
+
+	const float TRANSITION_TIME{ 3.0f };
 };

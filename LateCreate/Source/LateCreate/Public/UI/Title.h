@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Sound/SoundMix.h"
 #include "Title.generated.h"
 
 /**
@@ -29,9 +30,15 @@ public:
 
 	void OpenStageDelay();
 
+	//サウンドミックスのバインド
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category = "Sound")
+	USoundMix* SEDuckSoundMix;
+
 private:
 	FTimerHandle StageOpenTimer;
 	//変数宣言
 	UPROPERTY(EditAnywhere, Category = "Sound")
 	USoundBase* SoundToPlayPushButton;
+
+	const float TRANSITION_TIME{ 3.0f };
 };
