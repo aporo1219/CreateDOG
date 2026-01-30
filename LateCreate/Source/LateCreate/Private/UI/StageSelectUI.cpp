@@ -66,7 +66,7 @@ void UStageSelectUI::OpenStageIndex(int32 Index)
 		StageOpenTimer,
 		this,
 		&UStageSelectUI::OpenStageDelay,
-		0.5f, 
+		1.5f, 
 		false
 	);
 
