@@ -44,6 +44,12 @@ public:
 	//点滅処理関数
 	void Blink();
 
+	//視点操作開始関数
+	void StartLook(const FInputActionValue& value);
+
+	//視点操作終了関数
+	void EndLook(const FInputActionValue& value);
+
 private:
 	//主人公のメッシュ カプセル
 	UPROPERTY(VisibleAnywhere, Category = Character, meta = (AllowPrivaetAccess = "true"))
@@ -57,7 +63,10 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> Camera;
 
-	
+	//犬のStaticmeshの宣言
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* DogMesh;
+
 
 	//スプリングアームの角度変数
 	float RollArm = 0.0f, PitchArm = -30.0f, YawArm = 0.0f;
@@ -104,6 +113,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = Input, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputAction> ClickAction;
 
+	//LookHoldInputAction
+	UPROPERTY(EditAnywhere, Category = Input, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UInputAction> LookHoldAction;
 public:
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -143,11 +155,6 @@ private:
 	FVector WorldLocation;
 	FVector WorldDirection;
 
-	//meshの大きさ補正
-	float MeshScale = 0.3f;
-
-	//角度補正
-	float AngleCon = 90.0f;
 
 	//速度
 	float Speed = 300.0f;
@@ -184,6 +191,8 @@ private:
 	const int MaxBlinkCount = 6;//3回点滅
 
 	float BlinkInterval = 0.1f;
+
+	bool bCanLook = false;
 
 	//関数宣言
 	//ゲームオーバー関数

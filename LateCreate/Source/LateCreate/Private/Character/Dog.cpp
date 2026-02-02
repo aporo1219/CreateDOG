@@ -29,69 +29,15 @@ ADog::ADog()
 	RootComponent = GetCapsuleComponent();
 
 
-	//HeadCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HeadCollision"));
-	//HeadCollision->SetupAttachment(GetMesh(), FName("head")); // headボーンにアタッチ
-	//HeadCollision->SetCapsuleSize(12.f, 15.f);
-	//HeadCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
-	//HeadCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	// StaticMeshComponent をメンバとして生成
+	DogMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisualMesh"));
+	// ルート（CapsuleComponent）にアタッチ
+	DogMesh->SetupAttachment(GetCapsuleComponent());
+	// 衝突はカプセルで扱うため、StaticMesh側は無効に
+	DogMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	// 追加：メッシュで物理シミュレートがONになっていないことを保証
+	DogMesh->SetSimulatePhysics(false);
 
-	//// --- 前足（左） ---
-	//FrontLeftLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("FrontLeftLegCollision"));
-	//FrontLeftLegCollision->SetupAttachment(GetMesh(), FName("front_left_leg"));
-	//FrontLeftLegCollision->SetCapsuleSize(6.f, 12.f);
-	//FrontLeftLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
-	//FrontLeftLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-
-	//// --- 前足（右） ---
-	//FrontRightLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("FrontRightLegCollision"));
-	//FrontRightLegCollision->SetupAttachment(GetMesh(), FName("front_right_leg"));
-	//FrontRightLegCollision->SetCapsuleSize(6.f, 12.f);
-	//FrontRightLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
-	//FrontRightLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	
-	//// --- 後足（左） ---
-	//BackLeftLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("BackLeftLegCollision"));
-	//BackLeftLegCollision->SetupAttachment(GetMesh(), FName("back_left_leg"));
-	//BackLeftLegCollision->SetCapsuleSize(6.f, 12.f);
-	//BackLeftLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
-	//BackLeftLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-
-	//// --- 後足（右） ---
-	//BackRightLegCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("BackRightLegCollision"));
-	//BackRightLegCollision->SetupAttachment(GetMesh(), FName("back_right_leg"));
-	//BackRightLegCollision->SetCapsuleSize(6.f, 12.f);
-	//BackRightLegCollision->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
-	//BackRightLegCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	// 仮の見た目（エンジン内のSphereを使う）
-	USkeletalMeshComponent* CharacterMesh = GetMesh();
-
-	//Mesh---------------------------------------------------
-	UStaticMesh* DogMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/model/newdog.newdog"));
-	if (DogMesh)
-	{
-		// 新しいメッシュコンポーネントを作成
-		UStaticMeshComponent* VisualMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisualMesh"));
-		VisualMesh->SetStaticMesh(DogMesh);
-
-		// ルート（CapsuleComponent）にアタッチ
-		VisualMesh->SetupAttachment(GetCapsuleComponent());
-		//大きさ変更
-		VisualMesh->SetRelativeScale3D(FVector(MeshScale));
-		// 向き・位置調整（モデルに合わせて調整OK）
-		VisualMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -AngleCon));
-		VisualMesh->SetRelativeRotation(FRotator(0.0f, AngleCon, 0.0f));
-
-		// 衝突はカプセルで扱うため、StaticMesh側は無効に
-		VisualMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-		// 追加：メッシュで物理シミュレートがONになっていないことを保証
-		VisualMesh->SetSimulatePhysics(false);
-	}
-	/*else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to load StaticMesh: /Game/model/newdog.newdog"));
-	}*/
-	
 	// MaterialをStaticMeshに設定する
 	UCapsuleComponent* Capsule = GetCapsuleComponent();
 	Capsule->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -155,6 +101,9 @@ ADog::ADog()
 
 	//Standerdアクション読み込み
 	StanderdAction = LoadObject<UInputAction>(nullptr, TEXT("/Game/input/IA_Standerd"));
+
+	//LookHoldアクション読み込み
+	LookHoldAction = LoadObject<UInputAction>(nullptr, TEXT("Game/input/IA_LookHold"));
 
 	// CharacterMovementComponent にジャンプ力を設定
 	GetCharacterMovement()->JumpZVelocity = JumpForce;
@@ -244,12 +193,20 @@ void ADog::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 		EnhancedInputComponent->BindAction(ClickAction, ETriggerEvent::Triggered, this, &ADog::MoveToMousePoint);
 		//Contro;BallとIA_SwitchのTriggeredをBindする
 		EnhancedInputComponent->BindAction(SwitchAction, ETriggerEvent::Started, this, &ADog::Switch);
+		//Contro;BallとIA_LookHoldのTriggeredをBindする
+		EnhancedInputComponent->BindAction(LookHoldAction, ETriggerEvent::Started, this, &ADog::StartLook);
+		//Contro;BallとIA_LookHoldのTriggeredをBindする
+		EnhancedInputComponent->BindAction(LookHoldAction, ETriggerEvent::Completed, this, &ADog::EndLook);
 	}
 }
 
 //視点操作の処理関数
 void ADog::Look(const FInputActionValue& Value)
 {
+	//視点の制御
+	if (!bCanLook)
+		return;
+
 	// inputのValueはVector2Dに変換
 	FVector2D v = Value.Get<FVector2D>();
 
@@ -565,10 +522,16 @@ void ADog::Blink()
 	}
 }
 
-////無敵処理関数
-//void ADog::EndInvicnble()
-//{
-//	bIsInvincible = false;
-//
-//	SetActorHiddenInGame(false);
-//}
+//視点操作制御開始関数
+void ADog::StartLook(const FInputActionValue& value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("StartLook"));
+	bCanLook = true;
+}
+
+//視点操作制御終了関数
+void ADog::EndLook(const FInputActionValue& value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("EndLook"));
+	bCanLook = false;
+}
