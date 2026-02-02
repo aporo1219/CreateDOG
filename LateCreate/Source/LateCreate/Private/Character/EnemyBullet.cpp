@@ -36,8 +36,8 @@ AEnemyBullet::AEnemyBullet()
 
 	// ProjectileMovement
 	Movement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
-	Movement->InitialSpeed = 3000.0f;
-	Movement->MaxSpeed = 3000.0f;
+	Movement->InitialSpeed = 7000.0f;
+	Movement->MaxSpeed = 7000.0f;
 	Movement->bRotationFollowsVelocity = true;
 	Movement->ProjectileGravityScale = 0.0f;
 	Movement->UpdatedComponent = RootComponent;

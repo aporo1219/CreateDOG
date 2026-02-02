@@ -43,7 +43,7 @@ private:
 	float s_speed = 3000.0f;
 	float s_maxspeed = 3000.0f;
 
-
+	const float damege{ 10.0f };
 public:
 	float g_HitScore = 100.0f;
 

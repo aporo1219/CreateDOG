@@ -41,6 +41,9 @@ public:
 	/** 全滅後に復活 */
 	void RespawnEnemies();
 
+	//スポーンする時の場所制限
+	bool FindSafeSpawnLoc(FVector& OutLoc);
+	
 	//変数宣言
 	// スポーン上限
 	UPROPERTY(EditAnywhere, Category = "Spawn")

@@ -188,6 +188,45 @@ void AEnemy::Fire()
     GetWorldTimerManager().SetTimer(FireTimerHandle, this, &AEnemy::Fire, NextFire, false);
 }
 
+//ダメージ処理
+void AEnemy::TakeDamege(float damege)
+{
+    // 無敵中ならダメージ無効
+    if (bIsInvincible)
+        return;
+
+    UE_LOG(LogTemp, Warning, TEXT("Enemy Hit"));
+
+    // HP減少
+    enemy_HP -= damege;
+    if (enemy_HP < 0)
+    {
+        enemy_HP = 0;
+    }
+
+    // HP0なら死亡処理へ
+    if (enemy_HP <= 0)
+    {
+        bDie = true;
+        StartBlinkAndDie();
+        return;
+    }
+
+    // 無敵開始
+    bIsInvincible = true;
+
+    StartBlinkAndDamege();
+
+    // 無敵解除タイマー
+    GetWorldTimerManager().SetTimer(
+        InvincibleTimerHandle,
+        this,
+        &AEnemy::EndInvinible,
+        InvincibleTime,
+        false
+    );
+}
+
 void AEnemy::TakeDamegeAndDie()
 {
     if (bScoreChenge)
@@ -231,6 +270,10 @@ void AEnemy::Respawn()
     bScoreChenge = false;
     BlinkCount = 0;
     bIsVisible = true;
+    bIsInvincible = false;
+    bDamageBlinking = false;
+    DamageBlinkCount = 0;
+    //enemy_HP = 20;
 
     // 非表示を解除
     SetActorHiddenInGame(false);
@@ -309,14 +352,48 @@ void AEnemy::Blink()
     }
 }
 
-//ダメージ受付関数
-void AEnemy::HitbyBullet()
+void AEnemy::EndInvinible()
 {
-    if (bBlinkMidWay || bDie)
+    bIsInvincible = false;
+
+    if (!bDie && EnemyMesh)
     {
-        return;
+        EnemyMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     }
 
-    bDie = true;
-    StartBlinkAndDie();
+    // 念のため表示を戻す
+    SetActorHiddenInGame(false);
+}
+
+void AEnemy::StartBlinkAndDamege()
+{
+    if (bDamageBlinking)
+        return;
+
+    bDamageBlinking = true;
+    DamageBlinkCount = 0;
+    bIsVisible = true;
+
+    GetWorldTimerManager().SetTimer(
+        DamageBlinkTimerHandle,
+        this,
+        &AEnemy::DamageBlink,
+        DamageBlinkInterval,
+        true
+    );
+}
+
+void AEnemy::DamageBlink()
+{
+    bIsVisible = !bIsVisible;
+    SetActorHiddenInGame(!bIsVisible);
+
+    DamageBlinkCount++;
+
+    if (DamageBlinkCount >= MaxDamageBlinkCount)
+    {
+        GetWorldTimerManager().ClearTimer(DamageBlinkTimerHandle);
+        bDamageBlinking = false;
+        SetActorHiddenInGame(false);
+    }
 }

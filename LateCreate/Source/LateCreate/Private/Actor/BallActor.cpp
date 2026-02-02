@@ -91,7 +91,10 @@ void ABallActor::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 
 	if (AEnemy* Enemy = Cast<AEnemy>(OtherActor))
 	{
-		Enemy->HitbyBullet();
+		Enemy->TakeDamege(damege);
+
+		// íeé©êgÇ‡è¡Ç∑
+		Destroy();
 	}
 	
 	// íeé©êgÇ‡è¡Ç∑

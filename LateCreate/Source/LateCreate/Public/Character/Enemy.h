@@ -57,8 +57,8 @@ public:
 	FTimerHandle FireTimerHandle;
 
 	//変数宣言
-	float FirstBullet1 = 2.0f;
-	float FirstBullet2 = 4.0f;
+	float FirstBullet1 = 1.0f;
+	float FirstBullet2 = 3.0f;
 	float BulletCoolTime1 = 5.0f;
 	float BulletCoolTime2 = 10.0f;
 
@@ -72,10 +72,15 @@ public:
 
 	void StartBlinkAndDie();//点滅開始関数
 
+	void StartBlinkAndDamege();
+
 	void Blink();//点滅処理関数
 
-	void HitbyBullet();
+	void DamageBlink();
 
+	void TakeDamege(float damege);//ダメージ処理
+
+	void EndInvinible();
 private:
 	//変数宣言
 	float EnemyTurnAngle = 270.0f;
@@ -96,5 +101,27 @@ private:
 
 	bool bScoreChenge;
 
+	float  enemy_HP{ 20 };
 	int32 killscore = 100;
+
+	//無敵中か
+	bool bIsInvincible{ false };
+
+	//無敵時間
+	UPROPERTY(EditAnywhere,Category = "Enemy")
+	float InvincibleTime{ 1.0f };
+
+	//無敵タイマー
+	FTimerHandle InvincibleTimerHandle;
+
+	bool bDamageBlinking = false;
+	int32 DamageBlinkCount = 0;
+
+	UPROPERTY(EditAnywhere)
+	int32 MaxDamageBlinkCount = 6;
+
+	UPROPERTY(EditAnywhere)
+	float DamageBlinkInterval = 0.1f;
+
+	FTimerHandle DamageBlinkTimerHandle;
 };

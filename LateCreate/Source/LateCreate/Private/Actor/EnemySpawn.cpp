@@ -47,27 +47,34 @@ void AEnemySpawn::Tick(float DeltaTime)
 void AEnemySpawn::SpawnEnemy()
 {
 	
-        int32 NumToSpawn = MaxEnemyCount;
-
-        for (int32 i = 0; i < MaxEnemyCount; i++)
+    for (int32 i = 0; i < MaxEnemyCount; i++)
+    {
+        FVector SpawnLoc;
+        if (!FindSafeSpawnLoc(SpawnLoc))
         {
-            FVector SpawnLoc = GetActorLocation() + FVector(
-                FMath::FRandRange(-2000.f, 2000.f),
-                FMath::FRandRange(-2000.f, 2000.f),
-                FMath::FRandRange(0.f, 200.f)
-            );
-
-            FRotator SpawnRot = GetActorRotation();
-
-            AEnemy* NewEnemy = GetWorld()->SpawnActor<AEnemy>(EnemeyClass, SpawnLoc, SpawnRot);
-            if (NewEnemy)
-            {
-                NewEnemy->SetOwner(this); // Spawní ímóp
-                SpawnedEnemies.Add(NewEnemy);
-            }
+            UE_LOG(LogTemp, Warning, TEXT("Safe spawn location not found"));
+            continue;
         }
-    
-	
+
+        FRotator SpawnRot = GetActorRotation();
+
+        FActorSpawnParameters Params;
+        Params.SpawnCollisionHandlingOverride =
+            ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+
+        AEnemy* NewEnemy = GetWorld()->SpawnActor<AEnemy>(
+            EnemeyClass,
+            SpawnLoc,
+            SpawnRot,
+            Params
+        );
+
+        if (NewEnemy)
+        {
+            NewEnemy->SetOwner(this);
+            SpawnedEnemies.Add(NewEnemy);
+        }
+    }
 }
 
 // ìGÇ™ì|Ç≥ÇÍÇΩÇÁåƒÇŒÇÍÇÈ
@@ -109,6 +116,43 @@ void AEnemySpawn::RespawnEnemies()
           Enemy->Respawn();
       }
    }
+}
+
+//à¿ëSÇ»èÍèäéwíË
+bool AEnemySpawn::FindSafeSpawnLoc(FVector& OutLoc)
+{
+    const float Radius = 50.f;   // ìGÇÃîºåa
+    const float HalfHeight = 80.f; // ìGÇÃçÇÇ≥
+
+    FCollisionShape Capsule = FCollisionShape::MakeCapsule(Radius, HalfHeight);
+
+    FCollisionQueryParams Params;
+    Params.AddIgnoredActor(this);
+
+    for (int32 i = 0; i < 10; i++) // ç≈ëÂ10âÒÉgÉâÉC
+    {
+        FVector TestLoc = GetActorLocation() + FVector(
+            FMath::FRandRange(-2000.f, 2000.f),
+            FMath::FRandRange(-2000.f, 2000.f),
+            FMath::FRandRange(50.f, 200.f)
+        );
+
+        bool bHit = GetWorld()->OverlapBlockingTestByChannel(
+            TestLoc,
+            FQuat::Identity,
+            ECC_WorldStatic,
+            Capsule,
+            Params
+        );
+
+        if (!bHit)
+        {
+            OutLoc = TestLoc;
+            return true;
+        }
+    }
+
+    return false; // å©Ç¬Ç©ÇÁÇ»Ç©Ç¡ÇΩ
 }
 
 
