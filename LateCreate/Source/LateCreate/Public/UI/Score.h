@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Image.h"
+#include "Engine/Texture2D.h"
 #include "Score.generated.h"
 
 /**
@@ -72,8 +74,9 @@ private:
 	float RedTimeText = 10.0f;
 
 	float Score = 1000.0f;
-
-
+	
+	//画像切り換え変数
+	bool bIsImage{ false };
 
 public:
 	//テキスト表示
@@ -84,4 +87,22 @@ public:
 
 	UFUNCTION()
 	void ReceiveDialogue(const FText& InDialogueText);
+	
+	//UIのImageとの紐付け
+	UPROPERTY(meta  = (BindWidget))
+	UImage* IconImage;
+
+	//切り換え画像
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = "UI")
+	UTexture2D* Move;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	UTexture2D* Attack;
+
+	//画像の切り換え関数
+	UFUNCTION(BlueprintCallable)
+	void ChangeImage(bool battack);
+
+	UFUNCTION()
+	void OnModeChange(bool bIsAttack);
 };

@@ -37,7 +37,8 @@ ADog::ADog()
 	DogMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	// 追加：メッシュで物理シミュレートがONになっていないことを保証
 	DogMesh->SetSimulatePhysics(false);
-
+    //カメラが近づいたときにカメラからみえなくする
+	DogMesh->SetOwnerNoSee(true);
 	// MaterialをStaticMeshに設定する
 	UCapsuleComponent* Capsule = GetCapsuleComponent();
 	Capsule->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -67,6 +68,8 @@ ADog::ADog()
 	SpringArm->bEnableCameraLag = true;
 	SpringArm->CameraLagSpeed = 5.0f;
 
+	//スプリングアームの衝突を切る
+	SpringArm->bDoCollisionTest = false;
 	//カメラ--------------------------------------------------------------------
 	// カメラのセットアップ
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -364,10 +367,15 @@ void ADog::MoveToMousePoint(const FInputActionValue& Value)
 //モードの切り替え関数
 void ADog::Switch(const FInputActionValue& Value)
 {
+	AMyGameModeBase* GM  = Cast<AMyGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (!IsChangeAttack)
 	{
 		IsChangeAttack = true;
 		OnSayDialogue.Broadcast(FText::FromString(TEXT("攻撃だ")));
+
+		//UIへ通知（攻撃モード）
+		OnModeChanged.Broadcast(true);
+
 
 		//切り替えSE
 		if (SoundToPlayChenge)
@@ -379,6 +387,10 @@ void ADog::Switch(const FInputActionValue& Value)
 	{
 		IsChangeAttack = false;
 		OnSayDialogue.Broadcast(FText::FromString(TEXT("移動だ")));
+
+		//UIへ通知（移動モード）
+		OnModeChanged.Broadcast(false);
+
 
 		//切り替えSE
 		if (SoundToPlayChenge)

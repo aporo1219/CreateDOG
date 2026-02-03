@@ -39,6 +39,11 @@ void UScore :: NativeConstruct()
 		Dog->OnHealthChanged.AddDynamic(this, &UScore::UpdateHealthText);
 
 		Dog->OnSayDialogue.AddDynamic(this, &UScore::ReceiveDialogue);
+
+		Dog->OnModeChanged.AddDynamic(this, &UScore::OnModeChange);
+
+		// ‰Šúó‘Ô‚ğ”½‰f
+		OnModeChange(Dog->GetIsChangeAttck());
 		// ‰Šú•\¦
 		UpdateHealthText();
 
@@ -202,4 +207,27 @@ void UScore::HideDialogue()
 	{
 		DialogueText->SetVisibility(ESlateVisibility::Hidden);
 	}
+}
+
+//‰æ‘œ‚ÌØ‚èŠ·‚¦
+void UScore::ChangeImage(bool battack)
+{
+	if (!IconImage)
+		return;
+	
+	if (battack && Attack)
+	{
+		IconImage->SetBrushFromTexture(Attack);
+	}
+	else if (!battack && Move)
+	{
+		IconImage->SetBrushFromTexture(Move);
+	}
+}
+
+//‰æ‘œ‚ÌØ‚è‘Ö‚¦ŠÖ”‚ğŒÄ‚Ôo‚·
+void UScore::OnModeChange(bool bIsAttack)
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnModeChange: %s"), bIsAttack ? TEXT("Attack") : TEXT("Move"));
+	ChangeImage(bIsAttack);
 }

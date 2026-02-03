@@ -273,7 +273,7 @@ void AEnemy::Respawn()
     bIsInvincible = false;
     bDamageBlinking = false;
     DamageBlinkCount = 0;
-    //enemy_HP = 20;
+    enemy_HP = maxHP;
 
     // ”ñ•\¦‚ğ‰ğœ
     SetActorHiddenInGame(false);

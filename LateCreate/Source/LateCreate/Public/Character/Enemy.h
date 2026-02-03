@@ -101,7 +101,8 @@ private:
 
 	bool bScoreChenge;
 
-	float  enemy_HP{ 20 };
+	float maxHP{ 20.0f };
+	float  enemy_HP{20.0f};
 	int32 killscore = 100;
 
 	//–³“G’†‚©

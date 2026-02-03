@@ -16,6 +16,8 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 
+// モード切り替え通知
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnModeChanged, bool, bIsAttack);
 
 UCLASS()
 class LATECREATE_API ADog : public ACharacter
@@ -49,7 +51,8 @@ public:
 
 	//視点操作終了関数
 	void EndLook(const FInputActionValue& value);
-
+	
+	bool GetIsChangeAttck() { return IsChangeAttack; };
 private:
 	//主人公のメッシュ カプセル
 	UPROPERTY(VisibleAnywhere, Category = Character, meta = (AllowPrivaetAccess = "true"))
@@ -272,6 +275,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<class UUserWidget> GameOverClass; 
-
-
+    
+	UPROPERTY(BlueprintAssignable, Category = "Event")
+	FOnModeChanged OnModeChanged;
 };
